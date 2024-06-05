@@ -3,13 +3,10 @@ import { InMemoryRepository } from "../../../../@shared/infra/db/in-memory.repos
 import { Category } from "../../../domain/category.entity";
 import { CategoryInMemoryCollection } from "./category-in-memory.collection";
 
-export class CategoryInMemoryRepository<F = string> extends InMemoryRepository<
-  Category,
-  Uuid,
-  F
-> {
-  collection: CategoryInMemoryCollection<Category, F> =
-    new CategoryInMemoryCollection([]);
+export class CategoryInMemoryRepository<
+  F extends string = string
+> extends InMemoryRepository<Category, Uuid, F> {
+  collection: CategoryInMemoryCollection = new CategoryInMemoryCollection([]);
 
   getEntity(): new (...args: any[]) => Category {
     return Category;

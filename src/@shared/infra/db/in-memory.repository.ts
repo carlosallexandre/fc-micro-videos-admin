@@ -38,7 +38,7 @@ export abstract class InMemoryRepository<
   }
 
   async findById(entity_id: EntityId): Promise<E | null> {
-    return this.items.find((i) => i.id === entity_id) ?? null;
+    return this.items.find((i) => i.id.equals(entity_id)) ?? null;
   }
 
   protected getIndexOf(entity_id: EntityId): number {
@@ -55,10 +55,10 @@ export abstract class InMemoryRepository<
 
   async search(props: SearchParams<F>): Promise<SearchResult<E>> {
     const itemsFiltered = this.collection.applyFilter(props);
-
+    console.log(itemsFiltered.applySort(props).items);
     return new SearchResult({
-      items: itemsFiltered.applySort(props).applyPaginate(props),
-      total: itemsFiltered.length,
+      items: itemsFiltered.applySort(props).applyPaginate(props).items,
+      total: itemsFiltered.items.length,
       current_page: props.page,
       per_page: props.per_page,
     });
