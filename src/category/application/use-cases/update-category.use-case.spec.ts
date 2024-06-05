@@ -7,6 +7,7 @@ import {
 } from "../../../@shared/domain/value-objects/uuid.vo";
 import { Category } from "../../domain/category.entity";
 import { CategoryInMemoryRepository } from "../../infra/db/in-memory/category-in-memory.repository";
+import { EntityValidationError } from "../../../@shared/domain/validators/validation.error";
 
 describe("UpdateCategoryUseCase Unit Tests", () => {
   let useCase: UpdateCategoryUseCase;
@@ -29,6 +30,17 @@ describe("UpdateCategoryUseCase Unit Tests", () => {
     await expect(
       useCase.execute({ id: uuid.toString(), name: "fake" })
     ).rejects.toThrow(new NotFoundError(uuid.toString(), Category));
+  });
+
+  it("should throws an error when entity is not valid", async () => {
+    const category = Category.fake().aCategory().build();
+    repository.items.push(category);
+    await expect(
+      useCase.execute({
+        id: category.id.toString(),
+        name: "t".repeat(256),
+      })
+    ).rejects.toThrow(EntityValidationError);
   });
 
   it("should update a category", async () => {

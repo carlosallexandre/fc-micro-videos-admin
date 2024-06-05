@@ -55,7 +55,7 @@ export abstract class InMemoryRepository<
 
   async search(props: SearchParams<F>): Promise<SearchResult<E>> {
     const itemsFiltered = this.collection.applyFilter(props);
-    console.log(itemsFiltered.applySort(props).items);
+
     return new SearchResult({
       items: itemsFiltered.applySort(props).applyPaginate(props).items,
       total: itemsFiltered.items.length,

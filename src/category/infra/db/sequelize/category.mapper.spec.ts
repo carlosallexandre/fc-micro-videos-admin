@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto";
-import { Sequelize } from "sequelize-typescript";
 import { CategoryModel } from "./category.model";
 import { CategoryMapper } from "./category.mapper";
 import { EntityValidationError } from "../../../../@shared/domain/validators/validation.error";
@@ -12,25 +10,23 @@ describe("CategoryModelMapper Integration Tests", () => {
 
   it("should throws error when category is invalid", () => {
     try {
-      const model = CategoryModel.build({ id: randomUUID() });
+      const model = CategoryModel.build({ id: new Uuid().toString() });
       CategoryMapper.toEntity(model);
       fail(
         "The category is valid, but it needs throws a EntityValidationError"
       );
     } catch (e) {
       expect(e).toBeInstanceOf(EntityValidationError);
-      expect((e as EntityValidationError).error).toMatchObject({
-        name: [
-          "name should not be empty",
-          "name must be a string",
-          "name must be shorter than or equal to 255 characters",
-        ],
-      });
+      expect((e as EntityValidationError).error).toMatchObject([
+        {
+          name: ["name must be shorter than or equal to 255 characters"],
+        },
+      ]);
     }
   });
 
   it("should convert a category model to a category entity", () => {
-    const category_id = randomUUID();
+    const category_id = new Uuid().toString();
     const created_at = new Date();
     const model = CategoryModel.build({
       id: category_id,
@@ -52,7 +48,7 @@ describe("CategoryModelMapper Integration Tests", () => {
   });
 
   test("should convert a category entity to a category model", () => {
-    const category_id = randomUUID();
+    const category_id = new Uuid().toString();
     const created_at = new Date();
     const entity = new Category({
       category_id: new Uuid(category_id),

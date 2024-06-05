@@ -16,8 +16,6 @@ export abstract class InMemoryCollection<E, F> {
     // @ts-ignore
     getterFn: (sort: string, item: E) => any = (sort, item) => item[sort]
   ): InMemoryCollection<E, F> {
-    console.log(params);
-
     const Collection = this.getCollection();
     const { sort, sort_dir } = params;
     let itemsToSort = [...this.items];
