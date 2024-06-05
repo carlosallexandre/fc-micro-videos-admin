@@ -1,5 +1,5 @@
-import { SearchParams } from "../../../@shared/domain/repository/search-params";
-import { InMemoryCollection } from "../../../@shared/infra/db/in-memory.collection";
+import { SearchParams } from "../../../../@shared/domain/repository/search-params";
+import { InMemoryCollection } from "../../../../@shared/infra/db/in-memory.collection";
 
 export class CategoryInMemoryCollection<E, F> extends InMemoryCollection<E, F> {
   applyFilter(params: SearchParams<F>): InMemoryCollection<E, F> {

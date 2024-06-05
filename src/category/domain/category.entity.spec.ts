@@ -5,7 +5,7 @@ describe("Category Unit Tests", () => {
     it("should create with defaults", () => {
       const category = Category.create({ name: "Categoria" });
       expect(category.toJSON()).toMatchObject({
-        category_id: expect.any(String),
+        id: expect.any(String),
         name: "Categoria",
         description: null,
         is_active: true,
