@@ -10,7 +10,7 @@ const models = [CategoryModel];
   imports: [
     SequelizeModule.forRootAsync({
       inject: [ConfigService],
-      useFactory(configService: ConfigService<CONFIG_SCHEMA_TYPE>) {
+      async useFactory(configService: ConfigService<CONFIG_SCHEMA_TYPE>) {
         const dbVendor = configService.get('DB_VENDOR');
 
         switch (dbVendor) {

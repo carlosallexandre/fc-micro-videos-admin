@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { Op, Order, OrderItem, literal } from 'sequelize';
 import { NotFoundError } from '../../../../@shared/domain/errors/not-found.error';
 import { SearchParams } from '../../../../@shared/domain/repository/search-params';
 import { SearchResult } from '../../../../@shared/domain/repository/search-result';
@@ -16,9 +16,7 @@ export class CategorySequelizeRepository implements ICategoryRepository {
       where: props.filter
         ? { name: { [Op.like]: `%${props.filter}%` } }
         : undefined,
-      order: props.sort
-        ? [[props.sort, props.sort_dir]]
-        : [['created_at', 'desc']],
+      order: this.formatSort(props),
       offset: (props.page - 1) * props.per_page,
       limit: props.per_page,
     });
@@ -29,6 +27,18 @@ export class CategorySequelizeRepository implements ICategoryRepository {
       per_page: props.per_page,
       total: count,
     });
+  }
+
+  private formatSort(params: SearchParams): Order {
+    const sort = params.sort ?? 'created_at';
+    const sort_dir = params.sort_dir ?? 'desc';
+    const dialect = this.categoryModel.sequelize.getDialect();
+
+    if (dialect === 'mysql' && sort === 'name') {
+      return literal(`binary name ${sort_dir}`);
+    }
+
+    return [[sort, sort_dir]];
   }
 
   async insert(entity: Category): Promise<void> {
