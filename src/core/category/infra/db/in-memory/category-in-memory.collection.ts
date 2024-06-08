@@ -1,5 +1,5 @@
+import { InMemoryCollection } from '@core/@shared/infra/db/in-memory/in-memory.collection';
 import { SearchParams } from '../../../../@shared/domain/repository/search-params';
-import { InMemoryCollection } from '../../../../@shared/infra/db/in-memory.collection';
 import { Category } from '../../../domain/category.entity';
 
 export class CategoryInMemoryCollection extends InMemoryCollection<

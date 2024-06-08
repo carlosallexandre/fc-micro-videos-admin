@@ -1,10 +1,10 @@
-import { Entity } from '../../domain/entity';
-import { NotFoundError } from '../../domain/errors/not-found.error';
-import { IRepository } from '../../domain/repository/repository.interface';
-import { SearchParams } from '../../domain/repository/search-params';
-import { SearchResult } from '../../domain/repository/search-result';
-import { ISearchableRepository } from '../../domain/repository/searchable-repository.interface';
-import { ValueObject } from '../../domain/value-objects/value-object';
+import { Entity } from '@core/@shared/domain/entity';
+import { IRepository } from '@core/@shared/domain/repository/repository.interface';
+import { SearchParams } from '@core/@shared/domain/repository/search-params';
+import { SearchResult } from '@core/@shared/domain/repository/search-result';
+import { ISearchableRepository } from '@core/@shared/domain/repository/searchable-repository.interface';
+import { ValueObject } from '@core/@shared/domain/value-objects/value-object';
+import { NotFoundError } from '@core/@shared/domain/errors/not-found.error';
 import { InMemoryCollection } from './in-memory.collection';
 
 export abstract class InMemoryRepository<

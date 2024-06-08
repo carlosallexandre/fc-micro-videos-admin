@@ -1,7 +1,7 @@
-import { Entity } from '../../domain/entity';
-import { NotFoundError } from '../../domain/errors/not-found.error';
-import { SearchParams } from '../../domain/repository/search-params';
-import { Uuid } from '../../domain/value-objects/uuid.vo';
+import { Entity } from '@core/@shared/domain/entity';
+import { Uuid } from '@core/@shared/domain/value-objects/uuid.vo';
+import { SearchParams } from '@core/@shared/domain/repository/search-params';
+import { NotFoundError } from '@core/@shared/domain/errors/not-found.error';
 import { InMemoryCollection } from './in-memory.collection';
 import { InMemoryRepository } from './in-memory.repository';
 

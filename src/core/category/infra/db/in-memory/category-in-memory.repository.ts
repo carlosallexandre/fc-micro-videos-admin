@@ -1,5 +1,5 @@
+import { InMemoryRepository } from '@core/@shared/infra/db/in-memory/in-memory.repository';
 import { Uuid } from '../../../../@shared/domain/value-objects/uuid.vo';
-import { InMemoryRepository } from '../../../../@shared/infra/db/in-memory.repository';
 import { Category } from '../../../domain/category.entity';
 import { CategoryInMemoryCollection } from './category-in-memory.collection';
 

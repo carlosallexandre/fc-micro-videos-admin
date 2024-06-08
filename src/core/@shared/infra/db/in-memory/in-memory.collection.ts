@@ -1,4 +1,4 @@
-import { SearchParams } from '../../domain/repository/search-params';
+import { SearchParams } from '@core/@shared/domain/repository/search-params';
 
 export abstract class InMemoryCollection<E, F> {
   items: E[] = [];
