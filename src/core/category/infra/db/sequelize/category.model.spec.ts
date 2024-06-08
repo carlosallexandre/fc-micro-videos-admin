@@ -1,7 +1,7 @@
-import { randomUUID } from 'node:crypto';
-import { DataType, Sequelize } from 'sequelize-typescript';
+import { DataType } from 'sequelize-typescript';
 import { CategoryModel } from './category.model';
 import { setupSequelize } from '../../../../@shared/infra/testing/helpers';
+import { CategoryId } from '@core/category/domain/category-id.vo';
 
 describe('CategoryModel Integration Tests', () => {
   setupSequelize({ models: [CategoryModel] });
@@ -56,17 +56,17 @@ describe('CategoryModel Integration Tests', () => {
 
   test('create', async () => {
     // Arrange
-    const arrange = {
-      id: randomUUID(),
+    const input = {
+      id: new CategoryId().toString(),
       name: 'test',
       is_active: true,
       created_at: new Date(),
     };
 
     // Act
-    const category = await CategoryModel.create(arrange);
+    const category = await CategoryModel.create(input);
 
     // Assert
-    expect(category.toJSON()).toStrictEqual(arrange);
+    expect(category.toJSON()).toStrictEqual(input);
   });
 });

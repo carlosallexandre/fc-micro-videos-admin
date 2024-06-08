@@ -1,12 +1,12 @@
-import { Op, Order, OrderItem, literal } from 'sequelize';
+import { Op, Order, literal } from 'sequelize';
 import { NotFoundError } from '../../../../@shared/domain/errors/not-found.error';
 import { SearchParams } from '../../../../@shared/domain/repository/search-params';
 import { SearchResult } from '../../../../@shared/domain/repository/search-result';
-import { Uuid } from '../../../../@shared/domain/value-objects/uuid.vo';
-import { Category } from '../../../domain/category.entity';
+import { Category } from '../../../domain/category.aggregate';
 import { ICategoryRepository } from '../../../domain/category.repository';
 import { CategoryModel } from './category.model';
 import { CategoryMapper } from './category.mapper';
+import { CategoryId } from '@core/category/domain/category-id.vo';
 
 export class CategorySequelizeRepository implements ICategoryRepository {
   constructor(private categoryModel: typeof CategoryModel) {}
@@ -59,15 +59,15 @@ export class CategorySequelizeRepository implements ICategoryRepository {
     });
   }
 
-  async delete(entity_id: Uuid): Promise<void> {
-    const model = await this.categoryModel.findByPk(entity_id.toString());
-    if (!model) throw new NotFoundError(entity_id.toString(), this.getEntity());
-    await this.categoryModel.destroy({ where: { id: entity_id.toString() } });
+  async delete(category_id: CategoryId): Promise<void> {
+    const model = await this.categoryModel.findByPk(category_id.toString());
+    if (!model) throw new NotFoundError(category_id, this.getEntity());
+    await this.categoryModel.destroy({ where: { id: category_id.toString() } });
   }
 
-  async findById(entity_id: Uuid): Promise<Category | null> {
+  async findById(category_id: CategoryId): Promise<Category | null> {
     return this.categoryModel
-      .findByPk(entity_id.toString())
+      .findByPk(category_id.toString())
       .then((model) => (model ? CategoryMapper.toEntity(model) : null));
   }
 

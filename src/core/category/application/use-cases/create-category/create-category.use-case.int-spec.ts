@@ -1,4 +1,4 @@
-import { Uuid } from '../../../../@shared/domain/value-objects/uuid.vo';
+import { CategoryId } from '@core/category/domain/category-id.vo';
 import { setupSequelize } from '../../../../@shared/infra/testing/helpers';
 import { CategoryModel } from '../../../infra/db/sequelize/category.model';
 import { CategorySequelizeRepository } from '../../../infra/db/sequelize/category.repository';
@@ -17,8 +17,8 @@ describe('CreateCategory Integration Tests', () => {
 
   it('should create a category', async () => {
     const output = await useCase.execute({ name: 'test' });
-    const entity = await repository.findById(new Uuid(output.id));
-    expect(output).toStrictEqual(entity.toJSON());
+    const aggregate = await repository.findById(new CategoryId(output.id));
+    expect(output).toStrictEqual(aggregate.toJSON());
   });
 
   it('should create a category with description', async () => {
@@ -26,13 +26,13 @@ describe('CreateCategory Integration Tests', () => {
       name: 'test',
       description: 'some description',
     });
-    const entity = await repository.findById(new Uuid(output.id));
+    const aggregate = await repository.findById(new CategoryId(output.id));
     expect(output).toStrictEqual({
-      id: entity.id.toString(),
+      id: aggregate.id.toString(),
       name: 'test',
       description: 'some description',
       is_active: true,
-      created_at: entity.created_at,
+      created_at: aggregate.created_at,
     });
   });
 
@@ -42,13 +42,13 @@ describe('CreateCategory Integration Tests', () => {
       description: 'some description',
       is_active: true,
     });
-    const entity = await repository.findById(new Uuid(output.id));
+    const aggregate = await repository.findById(new CategoryId(output.id));
     expect(output).toStrictEqual({
-      id: entity.id.toString(),
+      id: aggregate.id.toString(),
       name: 'test',
       description: 'some description',
       is_active: true,
-      created_at: entity.created_at,
+      created_at: aggregate.created_at,
     });
   });
 
@@ -58,13 +58,13 @@ describe('CreateCategory Integration Tests', () => {
       description: 'some description',
       is_active: false,
     });
-    const entity = await repository.findById(new Uuid(output.id));
+    const aggregate = await repository.findById(new CategoryId(output.id));
     expect(output).toStrictEqual({
-      id: entity.id.toString(),
+      id: aggregate.id.toString(),
       name: 'test',
       description: 'some description',
       is_active: false,
-      created_at: entity.created_at,
+      created_at: aggregate.created_at,
     });
   });
 });

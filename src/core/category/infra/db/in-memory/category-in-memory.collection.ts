@@ -1,6 +1,6 @@
 import { InMemoryCollection } from '@core/@shared/infra/db/in-memory/in-memory.collection';
 import { SearchParams } from '../../../../@shared/domain/repository/search-params';
-import { Category } from '../../../domain/category.entity';
+import { Category } from '../../../domain/category.aggregate';
 
 export class CategoryInMemoryCollection extends InMemoryCollection<
   Category,

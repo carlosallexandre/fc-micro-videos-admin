@@ -1,4 +1,4 @@
-import { Category } from '../../../domain/category.entity';
+import { Category } from '../../../domain/category.aggregate';
 import { CategoryInMemoryRepository } from '../../../infra/db/in-memory/category-in-memory.repository';
 import { CategoryOutputMapper } from '../common/category-output';
 import { ListCategoriesUseCase } from './list-categories.use-case';

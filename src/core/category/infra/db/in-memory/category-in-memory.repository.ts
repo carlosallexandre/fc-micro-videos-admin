@@ -1,11 +1,11 @@
 import { InMemoryRepository } from '@core/@shared/infra/db/in-memory/in-memory.repository';
-import { Uuid } from '../../../../@shared/domain/value-objects/uuid.vo';
-import { Category } from '../../../domain/category.entity';
+import { Category } from '../../../domain/category.aggregate';
 import { CategoryInMemoryCollection } from './category-in-memory.collection';
+import { CategoryId } from '@core/category/domain/category-id.vo';
 
 export class CategoryInMemoryRepository<
   F extends string = string,
-> extends InMemoryRepository<Category, Uuid, F> {
+> extends InMemoryRepository<Category, CategoryId, F> {
   collection: CategoryInMemoryCollection = new CategoryInMemoryCollection([]);
 
   getEntity(): new (...args: any[]) => Category {

@@ -1,11 +1,10 @@
-import { randomUUID } from 'node:crypto';
 import { UpdateCategoryUseCase } from './update-category.use-case';
 import { NotFoundError } from '../../../../@shared/domain/errors/not-found.error';
-import { Uuid } from '../../../../@shared/domain/value-objects/uuid.vo';
 import { setupSequelize } from '../../../../@shared/infra/testing/helpers';
-import { Category } from '../../../domain/category.entity';
+import { Category } from '../../../domain/category.aggregate';
 import { CategoryModel } from '../../../infra/db/sequelize/category.model';
 import { CategorySequelizeRepository } from '../../../infra/db/sequelize/category.repository';
+import { CategoryId } from '@core/category/domain/category-id.vo';
 
 describe('UpdateCategoryUseCase Integration Tests', () => {
   let useCase: UpdateCategoryUseCase;
@@ -18,34 +17,34 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
     useCase = new UpdateCategoryUseCase(repository);
   });
 
-  it('should throws an error when entity not found', async () => {
-    const uuid = new Uuid();
+  it('should throws an error when category not found', async () => {
+    const categoryId = new CategoryId();
     await expect(
-      useCase.execute({ id: uuid.toString(), name: 'fake' }),
-    ).rejects.toThrow(new NotFoundError(uuid.toString(), Category));
+      useCase.execute({ id: categoryId.toString(), name: 'fake' }),
+    ).rejects.toThrow(new NotFoundError(categoryId.toString(), Category));
   });
 
   it('should update a category', async () => {
-    const entity = Category.fake().aCategory().build();
-    await repository.insert(entity);
+    const category = Category.fake().aCategory().build();
+    await repository.insert(category);
 
     const output = await useCase.execute({
-      id: entity.id.toString(),
+      id: category.id.toString(),
       name: 'test',
     });
     expect(output).toStrictEqual({
-      id: entity.id.toString(),
+      id: category.id.toString(),
       name: 'test',
-      description: entity.description,
+      description: category.description,
       is_active: true,
-      created_at: entity.created_at,
+      created_at: category.created_at,
     });
   });
 
   it.each([
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
         description: 'some description',
       },
@@ -59,7 +58,7 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
       },
       expected: {
@@ -72,7 +71,7 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
         is_active: false,
       },
@@ -86,7 +85,7 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
       },
       expected: {
@@ -99,7 +98,7 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
         is_active: true,
       },
@@ -113,7 +112,7 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
         description: 'some description',
         is_active: false,
@@ -129,7 +128,10 @@ describe('UpdateCategoryUseCase Integration Tests', () => {
   ])('should update when input is $input', async (i) => {
     // Arrange
     await repository.insert(
-      new Category({ category_id: new Uuid(i.input.id), name: 'some name' }),
+      new Category({
+        category_id: new CategoryId(i.input.id),
+        name: 'some name',
+      }),
     );
 
     // Act

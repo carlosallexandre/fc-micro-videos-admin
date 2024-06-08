@@ -1,7 +1,7 @@
+import { CategoryId } from '@core/category/domain/category-id.vo';
 import { IUseCase } from '../../../../@shared/application/use-case.interface';
 import { NotFoundError } from '../../../../@shared/domain/errors/not-found.error';
-import { Uuid } from '../../../../@shared/domain/value-objects/uuid.vo';
-import { Category } from '../../../domain/category.entity';
+import { Category } from '../../../domain/category.aggregate';
 import { ICategoryRepository } from '../../../domain/category.repository';
 import {
   CategoryOutput,
@@ -20,7 +20,7 @@ export class GetCategoryUseCase
   constructor(private readonly categoryRepository: ICategoryRepository) {}
 
   async execute(input: GetCategoryInput): Promise<GetCategoryOutput> {
-    const uuid = new Uuid(input.id);
+    const uuid = new CategoryId(input.id);
     const category = await this.categoryRepository.findById(uuid);
     if (!category) throw new NotFoundError(uuid.toString(), Category);
     return CategoryOutputMapper.toOutput(category);

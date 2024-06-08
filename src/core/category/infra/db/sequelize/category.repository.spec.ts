@@ -1,13 +1,12 @@
-import { Sequelize } from 'sequelize-typescript';
 import { CategorySequelizeRepository } from './category.repository';
 import { CategoryModel } from './category.model';
-import { Category } from '../../../domain/category.entity';
-import { Uuid } from '../../../../@shared/domain/value-objects/uuid.vo';
+import { Category } from '../../../domain/category.aggregate';
 import { NotFoundError } from '../../../../@shared/domain/errors/not-found.error';
 import { SearchParams } from '../../../../@shared/domain/repository/search-params';
 import { SearchResult } from '../../../../@shared/domain/repository/search-result';
 import { CategoryMapper } from './category.mapper';
 import { setupSequelize } from '../../../../@shared/infra/testing/helpers';
+import { CategoryId } from '@core/category/domain/category-id.vo';
 
 describe('CategorySequelizeRepository Integration Test', () => {
   setupSequelize({ models: [CategoryModel] });
@@ -18,63 +17,63 @@ describe('CategorySequelizeRepository Integration Test', () => {
     repository = new CategorySequelizeRepository(CategoryModel);
   });
 
-  it('should inserts a new entity', async () => {
+  it('should inserts a new category', async () => {
     const category = Category.fake().aCategory().build();
     await repository.insert(category);
-    const entity = await CategoryModel.findByPk(category.id.toString());
-    expect(entity.toJSON()).toStrictEqual(category.toJSON());
+    const categoryFound = await CategoryModel.findByPk(category.id.toString());
+    expect(categoryFound.toJSON()).toStrictEqual(category.toJSON());
   });
 
-  it('should finds a entity by id', async () => {
-    const entity = Category.fake().aCategory().build();
-    await repository.insert(entity);
-    const entityFound = await repository.findById(entity.id);
-    expect(entityFound.toJSON()).toStrictEqual(entity.toJSON());
+  it('should find a category by id', async () => {
+    const category = Category.fake().aCategory().build();
+    await repository.insert(category);
+    const categoryFound = await repository.findById(category.id);
+    expect(categoryFound.toJSON()).toStrictEqual(category.toJSON());
   });
 
   it('should return all categories', async () => {
-    const entity = Category.fake().aCategory().build();
-    await repository.insert(entity);
+    const category = Category.fake().aCategory().build();
+    await repository.insert(category);
 
-    const entities = await repository.findAll();
+    const categories = await repository.findAll();
 
-    expect(entities).toHaveLength(1);
-    expect(entities.map((entity) => entity.toJSON())).toStrictEqual([
-      entity.toJSON(),
+    expect(categories).toHaveLength(1);
+    expect(categories.map((c) => c.toJSON())).toStrictEqual([
+      category.toJSON(),
     ]);
   });
 
-  it('should throw error on update when a entity not found', async () => {
-    const entity = Category.fake().aCategory().build();
-    await expect(repository.update(entity)).rejects.toThrow(
-      new NotFoundError(entity.id, Category),
+  it('should throw an error on update when a category not found', async () => {
+    const category = Category.fake().aCategory().build();
+    await expect(repository.update(category)).rejects.toThrow(
+      new NotFoundError(category.id, Category),
     );
   });
 
-  it('should update a entity', async () => {
-    const entity = Category.fake().aCategory().build();
-    await repository.insert(entity);
+  it('should update a category', async () => {
+    const category = Category.fake().aCategory().build();
+    await repository.insert(category);
 
-    entity.changeName('Movie updated');
-    await repository.update(entity);
+    category.changeName('Movie updated');
+    await repository.update(category);
 
-    const entityFound = await repository.findById(entity.id);
-    expect(entityFound.toJSON()).toStrictEqual(entity.toJSON());
+    const categoryFound = await repository.findById(category.id);
+    expect(categoryFound.toJSON()).toStrictEqual(category.toJSON());
   });
 
-  it('should throw error on delete when a entity not found', async () => {
-    const categoryId = new Uuid();
+  it('should throw error on delete when a category not found', async () => {
+    const categoryId = new CategoryId();
     await expect(repository.delete(categoryId)).rejects.toThrow(
       new NotFoundError(categoryId, Category),
     );
   });
 
-  it('should delete a entity', async () => {
-    const entity = Category.fake().aCategory().build();
-    await repository.insert(entity);
+  it('should delete a category', async () => {
+    const category = Category.fake().aCategory().build();
+    await repository.insert(category);
 
-    await repository.delete(entity.id);
-    await expect(repository.findById(entity.id)).resolves.toBeNull();
+    await repository.delete(category.id);
+    await expect(repository.findById(category.id)).resolves.toBeNull();
   });
 
   describe('search method tests', () => {

@@ -15,7 +15,7 @@ import {
   ListCategoriesFixture,
   UpdateCategoryFixture,
 } from './category-fixture';
-import { Category } from '@core/category/domain/category.entity';
+import { Category } from '@core/category/domain/category.aggregate';
 import { CategoryCollectionPresenter } from './categories.presenter';
 import { CategoryOutputMapper } from '@core/category/application/use-cases/common/category-output';
 

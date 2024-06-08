@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { Category } from '@core/category/domain/category.entity';
+import { Category } from '@core/category/domain/category.aggregate';
 import { ICategoryRepository } from '@core/category/domain/category.repository';
 import { CATEGORY_PROVIDERS } from 'src/nest-modules/categories-module/categories.providers';
 import { startApp } from 'src/nest-modules/shared-module/testing/helpers';

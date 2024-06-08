@@ -1,13 +1,10 @@
-import { randomUUID } from 'node:crypto';
 import { UpdateCategoryUseCase } from './update-category.use-case';
 import { NotFoundError } from '../../../../@shared/domain/errors/not-found.error';
 import { EntityValidationError } from '../../../../@shared/domain/validators/validation.error';
-import {
-  InvalidUuidError,
-  Uuid,
-} from '../../../../@shared/domain/value-objects/uuid.vo';
-import { Category } from '../../../domain/category.entity';
+import { InvalidUuidError } from '../../../../@shared/domain/value-objects/uuid.vo';
+import { Category } from '../../../domain/category.aggregate';
 import { CategoryInMemoryRepository } from '../../../infra/db/in-memory/category-in-memory.repository';
+import { CategoryId } from '@core/category/domain/category-id.vo';
 
 describe('UpdateCategoryUseCase Unit Tests', () => {
   let useCase: UpdateCategoryUseCase;
@@ -18,21 +15,21 @@ describe('UpdateCategoryUseCase Unit Tests', () => {
     useCase = new UpdateCategoryUseCase(repository);
   });
 
-  it('should throws an error with invalid uuid', async () => {
+  it('should throws an error with invalid category id', async () => {
     await expect(
       useCase.execute({ id: 'fake id', name: 'fake' }),
     ).rejects.toThrow(new InvalidUuidError());
   });
 
-  it('should throws error when entity not found', async () => {
-    const uuid = new Uuid();
+  it('should throws error when category not found', async () => {
+    const categoryId = new CategoryId();
 
     await expect(
-      useCase.execute({ id: uuid.toString(), name: 'fake' }),
-    ).rejects.toThrow(new NotFoundError(uuid.toString(), Category));
+      useCase.execute({ id: categoryId.toString(), name: 'fake' }),
+    ).rejects.toThrow(new NotFoundError(categoryId.toString(), Category));
   });
 
-  it('should throws an error when entity is not valid', async () => {
+  it('should throws an error when category is not valid', async () => {
     const category = Category.fake().aCategory().build();
     repository.items.push(category);
     await expect(
@@ -43,29 +40,29 @@ describe('UpdateCategoryUseCase Unit Tests', () => {
     ).rejects.toThrow(EntityValidationError);
   });
 
-  it('should update a category', async () => {
+  it('should updates a category', async () => {
     const spyUpdate = jest.spyOn(repository, 'update');
-    const entity = new Category({ name: 'Movie' });
-    repository.items.push(entity);
+    const category = new Category({ name: 'Movie' });
+    repository.items.push(category);
 
     const output = await useCase.execute({
-      id: entity.id.toString(),
+      id: category.id.toString(),
       name: 'test',
     });
     expect(spyUpdate).toHaveBeenCalledTimes(1);
     expect(output).toStrictEqual({
-      id: entity.id.toString(),
+      id: category.id.toString(),
       name: 'test',
       description: null,
       is_active: true,
-      created_at: entity.created_at,
+      created_at: category.created_at,
     });
   });
 
   it.each([
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
         description: 'some description',
       },
@@ -79,7 +76,7 @@ describe('UpdateCategoryUseCase Unit Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
       },
       expected: {
@@ -92,7 +89,7 @@ describe('UpdateCategoryUseCase Unit Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
         is_active: false,
       },
@@ -106,7 +103,7 @@ describe('UpdateCategoryUseCase Unit Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
       },
       expected: {
@@ -119,7 +116,7 @@ describe('UpdateCategoryUseCase Unit Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
         is_active: true,
       },
@@ -133,7 +130,7 @@ describe('UpdateCategoryUseCase Unit Tests', () => {
     },
     {
       input: {
-        id: randomUUID(),
+        id: new CategoryId().toString(),
         name: 'test',
         description: 'some description',
         is_active: false,
@@ -149,7 +146,10 @@ describe('UpdateCategoryUseCase Unit Tests', () => {
   ])('should update when input is $input', async (i) => {
     // Arrange
     await repository.insert(
-      new Category({ category_id: new Uuid(i.input.id), name: 'some name' }),
+      new Category({
+        category_id: new CategoryId(i.input.id),
+        name: 'some name',
+      }),
     );
 
     // Act
