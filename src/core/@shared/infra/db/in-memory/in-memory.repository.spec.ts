@@ -1,8 +1,6 @@
 import { Entity } from '@core/@shared/domain/entity';
 import { Uuid } from '@core/@shared/domain/value-objects/uuid.vo';
-import { SearchParams } from '@core/@shared/domain/repository/search-params';
 import { NotFoundError } from '@core/@shared/domain/errors/not-found.error';
-import { InMemoryCollection } from './in-memory.collection';
 import { InMemoryRepository } from './in-memory.repository';
 
 class StubEntity extends Entity {
@@ -26,23 +24,7 @@ class StubEntity extends Entity {
   }
 }
 
-class StubCollection extends InMemoryCollection<StubEntity, 'name'> {
-  applyFilter(
-    params: SearchParams<'name'>,
-  ): InMemoryCollection<StubEntity, 'name'> {
-    throw new Error('Method not implemented.');
-  }
-
-  getCollection(): new (
-    ...args: any[]
-  ) => InMemoryCollection<StubEntity, 'name'> {
-    return StubCollection;
-  }
-}
-
 class StubInMemoryRepository extends InMemoryRepository<StubEntity, Uuid> {
-  collection = new StubCollection([]);
-
   getEntity() {
     return StubEntity;
   }
