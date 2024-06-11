@@ -2,10 +2,12 @@ import { Category } from '../../../domain/category.aggregate';
 import { CategoryId } from '@core/category/domain/category-id.vo';
 import { SearchParams } from '@core/@shared/domain/repository/search-params';
 import { InMemorySearchableRepository } from '@core/@shared/infra/db/in-memory/in-memory-searchable.repository';
+import { ICategoryRepository } from '@core/category/domain/category.repository';
 
-export class CategoryInMemoryRepository<
-  F extends string = string,
-> extends InMemorySearchableRepository<Category, CategoryId, F> {
+export class CategoryInMemoryRepository<F extends string = string>
+  extends InMemorySearchableRepository<Category, CategoryId, F>
+  implements ICategoryRepository
+{
   getEntity(): new (...args: any[]) => Category {
     return Category;
   }
