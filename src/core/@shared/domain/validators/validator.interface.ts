@@ -1,9 +1,7 @@
 import { Notification } from './notification';
 
-export type FieldsErrors =
-  | {
-      [field: string]: string[];
-    }
+export type ValidatorErrors =
+  | { [field: string]: string[] }
   | string;
 
 export interface IValidator<E = any> {
