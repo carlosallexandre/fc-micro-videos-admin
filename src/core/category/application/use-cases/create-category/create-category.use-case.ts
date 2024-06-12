@@ -1,5 +1,5 @@
+import { EntityValidationError } from '@core/@shared/domain/errors/validation.error';
 import { IUseCase } from '../../../../@shared/application/use-case.interface';
-import { EntityValidationError } from '../../../../@shared/domain/validators/validation.error';
 import { Category } from '../../../domain/category.aggregate';
 import { ICategoryRepository } from '../../../domain/category.repository';
 import {

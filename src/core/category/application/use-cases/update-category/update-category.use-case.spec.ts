@@ -1,10 +1,10 @@
 import { UpdateCategoryUseCase } from './update-category.use-case';
 import { NotFoundError } from '../../../../@shared/domain/errors/not-found.error';
-import { EntityValidationError } from '../../../../@shared/domain/validators/validation.error';
 import { InvalidUuidError } from '../../../../@shared/domain/value-objects/uuid.vo';
 import { Category } from '../../../domain/category.aggregate';
 import { CategoryInMemoryRepository } from '../../../infra/db/in-memory/category-in-memory.repository';
 import { CategoryId } from '@core/category/domain/category-id.vo';
+import { EntityValidationError } from '@core/@shared/domain/errors/validation.error';
 
 describe('UpdateCategoryUseCase Unit Tests', () => {
   let useCase: UpdateCategoryUseCase;

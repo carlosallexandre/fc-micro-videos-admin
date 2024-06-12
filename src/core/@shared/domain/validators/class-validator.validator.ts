@@ -1,5 +1,5 @@
 import { validateSync } from 'class-validator';
-import { Notification } from './notification';
+import { Notification } from '../notification';
 import { IValidator } from './validator.interface';
 
 export abstract class ClassValidator<E extends object = any>

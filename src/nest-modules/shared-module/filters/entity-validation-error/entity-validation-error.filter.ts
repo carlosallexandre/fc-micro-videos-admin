@@ -1,4 +1,4 @@
-import { EntityValidationError } from '@core/@shared/domain/validators/validation.error';
+import { EntityValidationError } from '@core/@shared/domain/errors/validation.error';
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { union } from 'lodash';
 

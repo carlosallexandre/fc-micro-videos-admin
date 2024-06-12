@@ -1,7 +1,7 @@
 //import { ClassValidatorFields } from "../../domain/validators/class-validator-fields";
 //import { EntityValidationError } from "../../domain/validators/validation.error";
 //import { ValidatorErrors } from "../../domain/validators/validator-fields-interface";
-import { Notification } from '../../domain/validators/notification';
+import { Notification } from '../../domain/notification';
 
 // type Expected =
 //   | {

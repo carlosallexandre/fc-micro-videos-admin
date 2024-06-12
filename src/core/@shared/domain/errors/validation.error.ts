@@ -1,4 +1,4 @@
-import { ValidatorErrors } from './validator.interface';
+import { ValidatorErrors } from '../validators/validator.interface';
 
 export class EntityValidationError extends Error {
   constructor(

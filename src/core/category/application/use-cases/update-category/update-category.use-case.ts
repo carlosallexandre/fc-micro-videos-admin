@@ -1,7 +1,6 @@
 import { CategoryId } from '@core/category/domain/category-id.vo';
 import { IUseCase } from '../../../../@shared/application/use-case.interface';
 import { NotFoundError } from '../../../../@shared/domain/errors/not-found.error';
-import { EntityValidationError } from '../../../../@shared/domain/validators/validation.error';
 import { Category } from '../../../domain/category.aggregate';
 import { ICategoryRepository } from '../../../domain/category.repository';
 import {
@@ -9,6 +8,7 @@ import {
   CategoryOutputMapper,
 } from '../common/category-output';
 import { UpdateCategoryInput } from './update-category.input';
+import { EntityValidationError } from '@core/@shared/domain/errors/validation.error';
 
 export type UpdateCategoryOutput = CategoryOutput;
 
