@@ -1,8 +1,7 @@
 import { IsEnum, MaxLength } from 'class-validator';
-import { Notification } from '@core/@shared/domain/validators/notification';
-import { ClassValidatorFields } from '@core/@shared/domain/validators/validator-fields';
 import { CastMember } from './cast-member.aggregate';
 import { CastMemberType } from './cast-member-type.vo';
+import { ClassValidator } from '@core/@shared/domain/validators/class-validator.validator';
 
 class CastMemberRules {
   @MaxLength(255, { groups: ['name'] })
@@ -17,14 +16,10 @@ class CastMemberRules {
   }
 }
 
-class CastMemberValidator extends ClassValidatorFields {
-  validate(
-    notification: Notification,
-    data: CastMember,
-    fields: string[],
-  ): boolean {
+class CastMemberValidator extends ClassValidator {
+  validate(data: CastMember, ...fields: string[]) {
     const newFields = fields?.length ? fields : ['name'];
-    return super.validate(notification, new CastMemberRules(data), newFields);
+    return super.validate(new CastMemberRules(data), ...newFields);
   }
 }
 

@@ -56,9 +56,10 @@ export class CastMember extends AggregateRoot {
     return this.props.created_at;
   }
 
-  validate(fields?: string[]): boolean {
+  validate(fields: string[] = []) {
     const validator = CastMemberValidatorFactory.create();
-    return validator.validate(this.notification, this, fields);
+    this.notification = validator.validate(this, ...fields);
+    return this.notification;
   }
 
   changeName(name: string): void {

@@ -44,9 +44,11 @@ export class Category extends AggregateRoot {
     return category;
   }
 
-  validate(fields?: string[]) {
+  validate(fields: string[] = []) {
     const validator = CategoryValidatorFactory.create();
-    return validator.validate(this.notification, this, fields);
+    const notification = validator.validate(this, ...fields);
+    this.notification.copyErrors(notification);
+    return notification;
   }
 
   static fake() {

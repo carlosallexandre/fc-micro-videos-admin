@@ -1,7 +1,7 @@
 import { CategoryId } from '@core/category/domain/category-id.vo';
-import { EntityValidationError } from '../../../../@shared/domain/validators/validation.error';
 import { Category } from '../../../domain/category.aggregate';
 import { CategoryModel } from './category.model';
+import { EntityValidationError } from '@core/@shared/domain/errors/validation.error';
 
 export class CategoryMapper {
   static toModel(category: Category): CategoryModel {

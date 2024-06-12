@@ -1,7 +1,7 @@
 //import { ClassValidatorFields } from "../../domain/validators/class-validator-fields";
 //import { EntityValidationError } from "../../domain/validators/validation.error";
-//import { FieldsErrors } from "../../domain/validators/validator-fields-interface";
-import { Notification } from '../../domain/validators/notification';
+//import { ValidatorErrors } from "../../domain/validators/validator-fields-interface";
+import { Notification } from '../../domain/notification';
 
 // type Expected =
 //   | {
@@ -40,7 +40,7 @@ expect.extend({
             )}. Current: ${JSON.stringify(expected.toJSON())}`,
         };
   },
-  // containsErrorMessages(expected: Expected, received: FieldsErrors) {
+  // containsErrorMessages(expected: Expected, received: ValidatorErrors) {
   //   if (typeof expected === "function") {
   //     try {
   //       expected();
@@ -63,8 +63,8 @@ expect.extend({
 });
 
 // function assertContainsErrorsMessages(
-//   expected: FieldsErrors,
-//   received: FieldsErrors
+//   expected: ValidatorErrors,
+//   received: ValidatorErrors
 // ) {
 //   const isMatch = expect.objectContaining(received).asymmetricMatch(expected);
 
