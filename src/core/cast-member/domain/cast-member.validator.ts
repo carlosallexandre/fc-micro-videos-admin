@@ -1,18 +1,13 @@
-import { IsEnum, MaxLength } from 'class-validator';
+import { MaxLength } from 'class-validator';
 import { CastMember } from './cast-member.aggregate';
-import { CastMemberType } from './cast-member-type.vo';
 import { ClassValidator } from '@core/@shared/domain/validators/class-validator.validator';
 
 class CastMemberRules {
   @MaxLength(255, { groups: ['name'] })
   name: string;
 
-  @IsEnum(Object.values(CastMemberType), { groups: ['type'] })
-  type: CastMemberType;
-
   constructor(castMember: CastMember) {
     this.name = castMember.name;
-    this.type = castMember.type;
   }
 }
 

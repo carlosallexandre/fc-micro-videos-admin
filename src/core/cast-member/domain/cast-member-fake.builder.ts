@@ -12,7 +12,7 @@ export class CastMemberFakeBuilder<TBuild = any> {
   private _name: PropOrFactory<string> = (_index) => this.chance.word();
 
   private _type: PropOrFactory<CastMemberType> = (_index) =>
-    CastMemberType.ACTOR;
+    CastMemberType.createAnActor();
 
   // auto generated in entity
   private _created_at: PropOrFactory<Date> | undefined = undefined;
@@ -56,11 +56,6 @@ export class CastMemberFakeBuilder<TBuild = any> {
 
   withInvalidNameTooLong(value?: string) {
     this._name = value ?? this.chance.word({ length: 256 });
-    return this;
-  }
-
-  withInvalidType(value?: CastMemberType) {
-    this._type = value ?? (0 as CastMemberType);
     return this;
   }
 

@@ -5,13 +5,14 @@ import { CastMember } from './cast-member.aggregate';
 describe('CastMember Unit Tests', () => {
   describe('create', () => {
     it('should create a cast member', () => {
+      const anActor = CastMemberType.createAnActor();
       const castMember = CastMember.create({
         name: 'test',
-        type: CastMemberType.ACTOR,
+        type: anActor,
       });
       expect(castMember.id).toBeInstanceOf(CastMemberId);
       expect(castMember.name).toBe('test');
-      expect(castMember.type).toBe(CastMemberType.ACTOR);
+      expect(castMember.type).toBe(anActor);
       expect(castMember.created_at).toBeInstanceOf(Date);
     });
 
@@ -20,27 +21,12 @@ describe('CastMember Unit Tests', () => {
 
       const castMember = CastMember.create({
         name: INVALID_NAME,
-        type: CastMemberType.ACTOR,
+        type: CastMemberType.createAnActor(),
       });
 
       expect(castMember.notification.hasErrors()).toBeTruthy();
       expect(castMember.notification.toJSON()).toStrictEqual([
         { name: ['name must be shorter than or equal to 255 characters'] },
-      ]);
-    });
-
-    it('should not create a cast member with invalid cast member type', () => {
-      const INVALID_CAST_MEMBER_TYPE = 0;
-
-      const castMember = CastMember.create({
-        name: 'test',
-        // @ts-expect-error
-        type: INVALID_CAST_MEMBER_TYPE,
-      });
-
-      expect(castMember.notification.hasErrors()).toBeTruthy();
-      expect(castMember.notification.toJSON()).toStrictEqual([
-        { type: ['type must be one of the following values: '] },
       ]);
     });
   });
@@ -72,33 +58,16 @@ describe('CastMember Unit Tests', () => {
 
   describe('changeType', () => {
     it('should change a cast member type', () => {
+      const aDirector = CastMemberType.createADirector();
       const castMember = CastMember.fake()
         .aCastMember()
-        .withCastMemberType(CastMemberType.DIRECTOR)
+        .withCastMemberType(aDirector)
         .build();
 
-      castMember.changeType(CastMemberType.ACTOR);
+      const anActor = CastMemberType.createAnActor();
+      castMember.changeType(anActor);
 
-      expect(castMember.type).toBe(CastMemberType.ACTOR);
-      expect(castMember.notification.hasErrors()).toBeFalsy();
-    });
-
-    it('should not change a cast member type to invalid cast member type', () => {
-      const INVALID_CAST_MEMBER_TYPE = CastMember.fake()
-        .aCastMember()
-        .withInvalidType().type;
-
-      const castMember = CastMember.fake()
-        .aCastMember()
-        .withCastMemberType(CastMemberType.DIRECTOR)
-        .build();
-
-      castMember.changeType(INVALID_CAST_MEMBER_TYPE);
-
-      expect(castMember.notification.hasErrors()).toBeTruthy();
-      expect(castMember.notification.toJSON()).toStrictEqual([
-        { type: ['type must be one of the following values: '] },
-      ]);
+      expect(castMember.type).toBe(anActor);
     });
   });
 });

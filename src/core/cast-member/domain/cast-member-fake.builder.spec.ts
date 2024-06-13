@@ -1,6 +1,6 @@
 import { CastMemberFakeBuilder } from './cast-member-fake.builder';
 import { CastMemberId } from './cast-member-id.vo';
-import { CastMemberType } from './cast-member-type.vo';
+import { CastMemberType, CastMemberTypes } from './cast-member-type.vo';
 import { CastMember } from './cast-member.aggregate';
 
 describe('CastMemberFakeBuilder Unit Tests', () => {
@@ -76,25 +76,19 @@ describe('CastMemberFakeBuilder Unit Tests', () => {
     });
 
     it('should be defined as an ACTOR', () => {
-      expect(faker.type).toBe(CastMemberType.ACTOR);
+      expect(faker.type.value).toEqual(CastMemberTypes.ACTOR);
     });
 
     it('should be able pass a value to withCastMemberType', () => {
-      const castMemberName = 'some name';
-      const castMember = faker.withName(castMemberName).build();
-      expect(castMember.name).toBe(castMemberName);
+      const castMemberType = CastMemberType.createADirector();
+      const castMember = faker.withCastMemberType(castMemberType).build();
+      expect(castMember.type).toBe(castMemberType);
     });
 
     it('should be able pass a function to withCastMemberType', () => {
-      const castMemberName = (index: number) => `test name ${index}`;
-      const castMember = faker.withName(castMemberName).build();
-      expect(castMember.name).toBe(`test name 0`);
-    });
-
-    it('should create an invalid type', () => {
-      const KNOWN_CAST_MEMBER_TYPES = Object.values(CastMemberType);
-      faker.withInvalidType();
-      expect(KNOWN_CAST_MEMBER_TYPES.includes(faker.type)).toBeFalsy();
+      const type = (index: number) => CastMemberType.createADirector();
+      const castMember = faker.withCastMemberType(type).build();
+      expect(castMember.type.value).toBe(CastMemberTypes.DIRECTOR);
     });
   });
 
@@ -143,7 +137,7 @@ describe('CastMemberFakeBuilder Unit Tests', () => {
     let castMember = CastMemberFakeBuilder.aCastMember().build();
     expect(castMember.id).toBeInstanceOf(CastMemberId);
     expect(typeof castMember.name).toBe('string');
-    expect(castMember.type).toBe(CastMemberType.ACTOR);
+    expect(castMember.type.value).toBe(CastMemberTypes.ACTOR);
     expect(castMember.created_at).toBeInstanceOf(Date);
 
     // with values
@@ -152,12 +146,12 @@ describe('CastMemberFakeBuilder Unit Tests', () => {
     castMember = CastMemberFakeBuilder.aCastMember()
       .withCastMemberId(castMemberId)
       .withName('test')
-      .withCastMemberType(CastMemberType.DIRECTOR)
+      .withCastMemberType(CastMemberType.createADirector())
       .withCreatedAt(createdAt)
       .build();
     expect(castMember.id).toBe(castMemberId);
     expect(castMember.name).toBe('test');
-    expect(castMember.type).toBe(CastMemberType.DIRECTOR);
+    expect(castMember.type.value).toBe(CastMemberTypes.DIRECTOR);
     expect(castMember.created_at).toBe(createdAt);
   });
 
@@ -167,7 +161,7 @@ describe('CastMemberFakeBuilder Unit Tests', () => {
     castMembers.forEach((castMember) => {
       expect(castMember.id).toBeInstanceOf(CastMemberId);
       expect(typeof castMember.name).toBe('string');
-      expect(castMember.type).toBe(CastMemberType.ACTOR);
+      expect(castMember.type.value).toBe(CastMemberTypes.ACTOR);
       expect(castMember.created_at).toBeInstanceOf(Date);
     });
 
@@ -183,7 +177,7 @@ describe('CastMemberFakeBuilder Unit Tests', () => {
     castMembers.forEach((castMember, index) => {
       expect(castMember.id).toBe(castMemberId);
       expect(castMember.name).toBe(`test ${index}`);
-      expect(castMember.type).toBe(getCastMemberType(index));
+      expect(castMember.type).toEqual(getCastMemberType(index));
       expect(castMember.created_at).toBe(createdAt);
     });
   });
@@ -191,5 +185,7 @@ describe('CastMemberFakeBuilder Unit Tests', () => {
 
 function getCastMemberType(val: number) {
   const isEven = (val: number) => val % 2 == 0;
-  return isEven(val) ? CastMemberType.ACTOR : CastMemberType.DIRECTOR;
+  return isEven(val)
+    ? CastMemberType.createAnActor()
+    : CastMemberType.createADirector();
 }

@@ -58,7 +58,8 @@ export class CastMember extends AggregateRoot {
 
   validate(fields: string[] = []) {
     const validator = CastMemberValidatorFactory.create();
-    this.notification = validator.validate(this, ...fields);
+    const notification = validator.validate(this, ...fields);
+    this.notification.copyErrors(notification);
     return this.notification;
   }
 
@@ -69,14 +70,13 @@ export class CastMember extends AggregateRoot {
 
   changeType(type: CastMemberType): void {
     this.props.type = type;
-    this.validate(['type']);
   }
 
   toJSON(): Record<string, any> {
     return {
       id: this.id.toString(),
       name: this.name,
-      type: this.type,
+      type: this.type.value,
       created_at: this.created_at,
     };
   }
