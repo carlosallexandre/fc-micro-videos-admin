@@ -7,11 +7,14 @@ import {
 } from '../common/cast-member.output';
 import { EntityValidationError } from '@core/@shared/domain/errors/validation.error';
 import { Notification } from '@core/@shared/domain/notification';
-import { CastMemberType } from '@core/cast-member/domain/cast-member-type.vo';
+import {
+  CastMemberType,
+  CastMemberTypes,
+} from '@core/cast-member/domain/cast-member-type.vo';
 
 export type CreateCastMemberInput = {
   name: string;
-  type: number;
+  type: CastMemberTypes;
 };
 
 export type CreateCastMemberOutput = CastMemberOutput;

@@ -12,7 +12,7 @@ import {
 } from '../common/cast-member.output';
 import { CastMemberTypes } from '@core/cast-member/domain/cast-member-type.vo';
 
-type CastMemberFilter = {
+export type CastMemberFilter = {
   name?: string | null;
   type?: CastMemberTypes | null;
 };
