@@ -1,6 +1,6 @@
 import { Chance } from 'chance';
 import { CastMemberId } from './cast-member-id.vo';
-import { CastMemberType } from './cast-member-type.vo';
+import { CastMemberType, CastMemberTypes } from './cast-member-type.vo';
 import { CastMember } from './cast-member.aggregate';
 
 type PropOrFactory<T> = T | ((index: number) => T);
@@ -21,6 +21,18 @@ export class CastMemberFakeBuilder<TBuild = any> {
 
   static aCastMember() {
     return new CastMemberFakeBuilder<CastMember>();
+  }
+
+  static anActor() {
+    return new CastMemberFakeBuilder<CastMember>().withCastMemberType(
+      CastMemberType.createAnActor(),
+    );
+  }
+
+  static aDirector() {
+    return new CastMemberFakeBuilder<CastMember>().withCastMemberType(
+      CastMemberType.createADirector(),
+    );
   }
 
   static theCastMembers(countObjs: number) {
