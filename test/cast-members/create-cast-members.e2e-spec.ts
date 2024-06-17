@@ -8,7 +8,7 @@ import { CastMembersController } from 'src/nest-modules/cast-members-module/cast
 import { CastMemberOutputMapper } from '@core/cast-member/application/use-cases/common/cast-member.output';
 import { instanceToPlain } from 'class-transformer';
 
-describe('Categories Controller (e2e)', () => {
+describe('CastMembers Controller (e2e)', () => {
   const appHelper = startApp();
   let castMemberRepository: ICastMemberRepository;
 
