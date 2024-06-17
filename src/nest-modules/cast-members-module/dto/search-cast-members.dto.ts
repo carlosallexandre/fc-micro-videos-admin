@@ -3,30 +3,28 @@ import {
   CastMemberFilter,
   ListCastMembersInput,
 } from '@core/cast-member/application/use-cases/list-cast-members/list-cast-members.use-case';
-import { Type } from 'class-transformer';
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsInt, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 class CastMemberFilterDto implements CastMemberFilter {
   @IsString()
   @IsOptional()
   name?: string | null;
 
-  @IsNumber()
+  @IsInt()
+  @Transform(({ value }) => parseInt(value))
   @IsOptional()
   type?: number | null;
 }
 
 export class SearchCastMembersDto implements ListCastMembersInput {
-  @IsNumber()
+  @IsInt()
+  @Transform(({ value }) => parseInt(value))
   @IsOptional()
   page?: number;
 
-  @IsNumber()
+  @IsInt()
+  @Transform(({ value }) => parseInt(value))
   @IsOptional()
   per_page?: number;
 
@@ -40,5 +38,6 @@ export class SearchCastMembersDto implements ListCastMembersInput {
 
   @ValidateNested()
   @Type(() => CastMemberFilterDto)
+  @IsOptional()
   filter?: CastMemberFilterDto;
 }

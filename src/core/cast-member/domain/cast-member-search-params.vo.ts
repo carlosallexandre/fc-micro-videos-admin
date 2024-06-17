@@ -51,7 +51,9 @@ export class CastMemberSearchParams extends SearchParams<CastMemberFilter> {
         filter: {
           name: filter?.name,
           type:
-            'type' in filter ? CastMemberType.create(props.filter.type) : null,
+            'type' in filter && filter.type != undefined
+              ? CastMemberType.create(props.filter.type)
+              : null,
         },
       });
     } catch (e) {

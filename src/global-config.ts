@@ -9,7 +9,9 @@ import { NotFoundErrorFilter } from './nest-modules/shared-module/filters/not-fo
 import { WrapperDataInterceptor } from './nest-modules/shared-module/interceptors/wrapper-data/wrapper-data.interceptor';
 
 export function applyGlobalConfig(app: INestApplication) {
-  app.useGlobalPipes(new ValidationPipe({ errorHttpStatusCode: 422 }));
+  app.useGlobalPipes(
+    new ValidationPipe({ errorHttpStatusCode: 422, transform: true }),
+  );
 
   app.useGlobalInterceptors(
     new WrapperDataInterceptor(),
