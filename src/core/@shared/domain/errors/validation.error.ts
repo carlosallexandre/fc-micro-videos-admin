@@ -30,3 +30,11 @@ export class SearchValidationError extends ValidationError {
     super(error, message);
   }
 }
+
+export class LoadEntityError extends ValidationError {
+  readonly name = 'LoadEntityError';
+
+  constructor(error: ValidatorErrors[], message = 'Load Entity Error') {
+    super(error, message);
+  }
+}
