@@ -1,6 +1,7 @@
 import { AggregateRoot } from '@core/@shared/domain/aggregate-root';
 import { CategoryId } from '@core/category/domain/category-id.vo';
 import { GenreId } from './genre-id.vo';
+import { GenreFakeBuilder } from './genre-fake.builder';
 
 type GenreProps = {
   id: GenreId;
@@ -23,6 +24,10 @@ export class Genre extends AggregateRoot {
       categories_id: new Map(props.categories_id.map((c) => [c.value, c])),
     });
     return genre;
+  }
+
+  static fake() {
+    return GenreFakeBuilder;
   }
 
   constructor(props: {
