@@ -3,6 +3,12 @@ import { Genre } from './genre.aggregate';
 import { GenreId } from './genre-id.vo';
 
 describe('Genre Unit Tests', () => {
+  beforeEach(() => {
+    Genre.prototype.validate = jest
+      .fn()
+      .mockImplementation(Genre.prototype.validate);
+  });
+
   test('constructor of genre', () => {
     const categoryId = new CategoryId();
     const categoriesId = new Map([[categoryId.value, categoryId]]);
@@ -57,6 +63,7 @@ describe('Genre Unit Tests', () => {
       expect(genre.name).toBe('test');
       expect(genre.categories_id).toEqual(categories_id);
       expect(genre.created_at).toBeInstanceOf(Date);
+      expect(Genre.prototype.validate).toHaveBeenCalledTimes(1);
 
       const genre2 = Genre.create({
         name: 'test',
@@ -69,15 +76,45 @@ describe('Genre Unit Tests', () => {
       expect(genre2.is_active).toBe(false);
       expect(genre2.created_at).toBeInstanceOf(Date);
     });
+
+    it('should notify error when create a genre with invalid name too long', () => {
+      const INVALID_NAME_TOO_LONG = 'a'.repeat(256);
+      const genre = Genre.create({
+        name: INVALID_NAME_TOO_LONG,
+        categories_id: [new CategoryId()],
+      });
+      expect(genre.notification.hasErrors()).toBeTruthy();
+      expect(genre.notification).notificationContainsErrorMessages([
+        { name: ['name must be shorter than or equal to 255 characters'] },
+      ]);
+    });
   });
 
-  test('should change name', () => {
-    const genre = Genre.create({
-      name: 'test',
-      categories_id: [new CategoryId()],
+  describe('should change name', () => {
+    it('should change a genre name', () => {
+      const genre = Genre.create({
+        name: 'test',
+        categories_id: [new CategoryId()],
+      });
+      genre.changeName('test2');
+      expect(genre.name).toBe('test2');
+      expect(Genre.prototype.validate).toHaveBeenCalledTimes(2);
     });
-    genre.changeName('test2');
-    expect(genre.name).toBe('test2');
+
+    it('should notify error when change a genre name to invalid too long name', () => {
+      const genre = Genre.create({
+        name: 'test',
+        categories_id: [new CategoryId()],
+      });
+
+      const INVALID_NAME_TOO_LONG = 't'.repeat(256);
+      genre.changeName(INVALID_NAME_TOO_LONG);
+
+      expect(genre.notification.hasErrors()).toBeTruthy();
+      expect(genre.notification).notificationContainsErrorMessages([
+        { name: ['name must be shorter than or equal to 255 characters'] },
+      ]);
+    });
   });
 
   test('should add category id', () => {
@@ -91,6 +128,7 @@ describe('Genre Unit Tests', () => {
     expect(genre.categories_id).toEqual(
       new Map([[categoryId.value, categoryId]]),
     );
+    expect(Genre.prototype.validate).toHaveBeenCalledTimes(1);
 
     const categoryId2 = new CategoryId();
     genre.addCategoryId(categoryId2);
@@ -101,5 +139,6 @@ describe('Genre Unit Tests', () => {
         [categoryId2.value, categoryId2],
       ]),
     );
+    expect(Genre.prototype.validate).toHaveBeenCalledTimes(1);
   });
 });

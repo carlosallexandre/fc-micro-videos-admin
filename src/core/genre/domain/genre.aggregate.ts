@@ -2,6 +2,7 @@ import { AggregateRoot } from '@core/@shared/domain/aggregate-root';
 import { CategoryId } from '@core/category/domain/category-id.vo';
 import { GenreId } from './genre-id.vo';
 import { GenreFakeBuilder } from './genre-fake.builder';
+import GenreValidatorFactory from './genre.validator';
 
 type GenreProps = {
   id: GenreId;
@@ -23,6 +24,7 @@ export class Genre extends AggregateRoot {
       ...props,
       categories_id: new Map(props.categories_id.map((c) => [c.value, c])),
     });
+    genre.validate();
     return genre;
   }
 
@@ -69,6 +71,7 @@ export class Genre extends AggregateRoot {
 
   changeName(value: string) {
     this.props.name = value;
+    this.validate(['name']);
   }
 
   addCategoryId(category_id: CategoryId) {
@@ -95,6 +98,13 @@ export class Genre extends AggregateRoot {
 
   deactivate() {
     this.props.is_active = false;
+  }
+
+  validate(fields: string[] = []) {
+    const validator = GenreValidatorFactory.create();
+    const notification = validator.validate(this, ...fields);
+    this.notification.copyErrors(notification);
+    return notification;
   }
 
   toJSON() {
