@@ -22,12 +22,16 @@ export class GenreSearchParams extends SearchParams<GenreFilter> {
       };
     } = {},
   ) {
+    const hasSort = Boolean(props?.sort);
+
     const categories_id = props?.filter?.categories_id?.map((c) =>
       c instanceof CategoryId ? c : new CategoryId(c),
     );
 
     return new GenreSearchParams({
       ...props,
+      sort: hasSort ? props.sort : 'created_at',
+      sort_dir: hasSort ? props.sort_dir : 'desc',
       filter: {
         name: props?.filter?.name,
         categories_id,
