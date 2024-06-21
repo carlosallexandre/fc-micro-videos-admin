@@ -1,6 +1,7 @@
 //import { ClassValidatorFields } from "../../domain/validators/class-validator-fields";
 //import { EntityValidationError } from "../../domain/validators/validation.error";
 //import { ValidatorErrors } from "../../domain/validators/validator-fields-interface";
+import { ValueObject } from '../../domain/value-objects/value-object';
 import { Notification } from '../../domain/notification';
 
 // type Expected =
@@ -38,6 +39,17 @@ expect.extend({
             `The validation errors not contains ${JSON.stringify(
               received,
             )}. Current: ${JSON.stringify(expected.toJSON())}`,
+        };
+  },
+  toBeValueObject(expected: ValueObject, received: ValueObject) {
+    return expected.equals(received)
+      ? { pass: true, message: () => '' }
+      : {
+          pass: false,
+          message: () =>
+            `The values object are not equal. Expected: ${JSON.stringify(
+              expected,
+            )} | Received: ${JSON.stringify(received)}`,
         };
   },
   // containsErrorMessages(expected: Expected, received: ValidatorErrors) {
