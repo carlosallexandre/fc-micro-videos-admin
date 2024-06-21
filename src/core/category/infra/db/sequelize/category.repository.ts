@@ -7,6 +7,8 @@ import { ICategoryRepository } from '../../../domain/category.repository';
 import { CategoryModel } from './category.model';
 import { CategoryMapper } from './category.mapper';
 import { CategoryId } from '@core/category/domain/category-id.vo';
+import { Uuid } from '@core/@shared/domain/value-objects/uuid.vo';
+import { InvalidArgumentError } from '@core/@shared/domain/errors/invalid-argument-error';
 
 export class CategorySequelizeRepository implements ICategoryRepository {
   constructor(private categoryModel: typeof CategoryModel) {}
@@ -75,6 +77,49 @@ export class CategorySequelizeRepository implements ICategoryRepository {
     return this.categoryModel
       .findAll()
       .then((models) => models.map(CategoryMapper.toEntity));
+  }
+
+  async findByIds(ids: CategoryId[]): Promise<Category[]> {
+    const models = await this.categoryModel.findAll({
+      where: {
+        id: {
+          [Op.in]: ids.map((id) => id.toString()),
+        },
+      },
+    });
+    return models.map(CategoryMapper.toEntity);
+  }
+
+  async existsById(
+    ids: CategoryId[],
+  ): Promise<{ exists: CategoryId[]; not_exists: CategoryId[] }> {
+    if (!ids.length) {
+      throw new InvalidArgumentError(
+        'ids must be an array with at least one element',
+      );
+    }
+
+    const existsCategoryModels = await this.categoryModel.findAll({
+      attributes: ['id'],
+      where: {
+        id: {
+          [Op.in]: ids.map((id) => id.toString()),
+        },
+      },
+    });
+
+    const existsCategoryIds = existsCategoryModels.map(
+      (m) => new CategoryId(m.id),
+    );
+
+    const notExitsCategoryIds = ids.filter(
+      (id) => !existsCategoryIds.some((i) => i.equals(id)),
+    );
+
+    return {
+      exists: existsCategoryIds,
+      not_exists: notExitsCategoryIds,
+    };
   }
 
   getEntity(): new (...args: any[]) => Category {

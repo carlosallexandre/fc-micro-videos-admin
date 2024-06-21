@@ -9,6 +9,7 @@ import { GenreModelMapper } from './genre-model.mapper';
 import { GenreModel } from './genre.model';
 import { NotFoundError } from '@core/@shared/domain/errors/not-found.error';
 import { UnitOfWorkSequelize } from '@core/@shared/infra/db/sequelize/unit-of-work-sequelize';
+import { InvalidArgumentError } from '@core/@shared/domain/errors/invalid-argument-error';
 
 export class GenreSequelizeRepository implements IGenreRepository {
   constructor(
@@ -42,6 +43,50 @@ export class GenreSequelizeRepository implements IGenreRepository {
       transaction: this.uow.getTransaction(),
     });
     return models.map(GenreModelMapper.toDomain);
+  }
+
+  async findByIds(ids: GenreId[]): Promise<Genre[]> {
+    const models = await this.genreModel.findAll({
+      where: {
+        id: {
+          [Op.in]: ids.map((id) => id.toString()),
+        },
+      },
+      include: ['categories_id'],
+      transaction: this.uow.getTransaction(),
+    });
+    return models.map(GenreModelMapper.toDomain);
+  }
+
+  async existsById(
+    ids: GenreId[],
+  ): Promise<{ exists: GenreId[]; not_exists: GenreId[] }> {
+    if (!ids.length) {
+      throw new InvalidArgumentError(
+        'ids must be an aarray with at least one element',
+      );
+    }
+
+    const existsGenreModels = await this.genreModel.findAll({
+      attributes: ['id'],
+      where: {
+        id: {
+          [Op.in]: ids.map((id) => id.toString()),
+        },
+      },
+      transaction: this.uow.getTransaction(),
+    });
+
+    const existsGenreIds = existsGenreModels.map((m) => new GenreId(m.id));
+
+    const notExistsGenreIds = ids.filter(
+      (id) => !existsGenreIds.some((e) => e.equals(id)),
+    );
+
+    return {
+      exists: existsGenreIds,
+      not_exists: notExistsGenreIds,
+    };
   }
 
   async update(aggregate: Genre): Promise<void> {
