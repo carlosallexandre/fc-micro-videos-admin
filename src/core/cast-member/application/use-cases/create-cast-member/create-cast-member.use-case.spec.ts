@@ -34,7 +34,7 @@ describe('CreateCastMemberUseCase Unit Tests', () => {
 
   it('should not create a cast member with invalid type', async () => {
     const INVALID_CAST_MEMBER_TYPE = 0;
-    const input = { name: 'test', type: INVALID_CAST_MEMBER_TYPE } as const;
+    const input = { name: 'test', type: INVALID_CAST_MEMBER_TYPE };
     await expect(useCase.execute(input)).rejects.toThrow(EntityValidationError);
   });
 });
