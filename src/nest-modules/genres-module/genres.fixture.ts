@@ -228,8 +228,8 @@ export class CreateGenreFixture {
         },
         expected: {
           message: [
-            'name must be shorter than or equal to 255 characters',
             'Category Not Found using ID d8952775-5f69-42d5-9e94-00f097e1b98c',
+            'name must be shorter than or equal to 255 characters',
           ],
           ...defaultExpected,
         },
