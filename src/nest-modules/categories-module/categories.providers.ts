@@ -3,6 +3,7 @@ import { DeleteCategoryUseCase } from '@core/category/application/use-cases/dele
 import { GetCategoryUseCase } from '@core/category/application/use-cases/get-category/get-category.use-case';
 import { ListCategoriesUseCase } from '@core/category/application/use-cases/list-categories/list-categories.use-case';
 import { UpdateCategoryUseCase } from '@core/category/application/use-cases/update-category/update-category.use-case';
+import { CategoriesIdExistsInStorageValidator } from '@core/category/application/validations/categories-ids-exists-in-storage';
 import { ICategoryRepository } from '@core/category/domain/category.repository';
 import { CategoryInMemoryRepository } from '@core/category/infra/db/in-memory/category-in-memory.repository';
 import { CategoryModel } from '@core/category/infra/db/sequelize/category.model';
@@ -65,7 +66,18 @@ export const USE_CASES = {
   },
 };
 
+const VALIDATIONS = {
+  CATEGORIES_IDS_EXISTS_IN_STORAGE_VALIDATOR: {
+    provide: CategoriesIdExistsInStorageValidator,
+    inject: [REPOSITORIES.CATEGORY_REPOSITORY.provide],
+    useFactory(categoryRepo: ICategoryRepository) {
+      return new CategoriesIdExistsInStorageValidator(categoryRepo);
+    },
+  },
+};
+
 export const CATEGORY_PROVIDERS = {
   REPOSITORIES,
   USE_CASES,
+  VALIDATIONS,
 };
