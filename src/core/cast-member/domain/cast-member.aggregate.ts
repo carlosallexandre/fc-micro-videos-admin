@@ -44,6 +44,10 @@ export class CastMember extends AggregateRoot {
     return this.props.id;
   }
 
+  get cast_member_id() {
+    return this.id;
+  }
+
   get name(): string {
     return this.props.name;
   }

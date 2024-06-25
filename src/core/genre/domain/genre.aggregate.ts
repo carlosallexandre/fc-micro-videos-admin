@@ -53,6 +53,10 @@ export class Genre extends AggregateRoot {
     return this.props.id;
   }
 
+  get genre_id() {
+    return this.id;
+  }
+
   get name() {
     return this.props.name;
   }
