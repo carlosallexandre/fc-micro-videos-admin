@@ -8,6 +8,8 @@ import { CastMemberId } from '@core/cast-member/domain/cast-member-id.vo';
 import { CategoryId } from '@core/category/domain/category-id.vo';
 import { GenreId } from '@core/genre/domain/genre-id.vo';
 import { Video } from './video.aggregate';
+import { IRepository } from '@core/@shared/domain/repository/repository.interface';
+import { VideoId } from './video-id.vo';
 
 export type VideoFilter = {
   title?: string;
@@ -84,5 +86,5 @@ export class VideoSearchParams extends SearchParams<VideoFilter> {
 
 export class VideoSearchResult extends SearchResult<Video> {}
 
-export interface IVideoRepository
-  extends ISearchableRepository<Video, VideoFilter> {}
+export type IVideoRepository = IRepository<Video, VideoId> &
+  ISearchableRepository<Video, VideoFilter>;
