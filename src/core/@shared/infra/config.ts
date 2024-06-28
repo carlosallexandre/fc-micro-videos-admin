@@ -14,13 +14,24 @@ export class Config {
     };
   }
 
+  static bucketName() {
+    Config.readEnv();
+
+    return Config.env.GOOGLE_CLOUD_STORAGE_BUCKET_NAME;
+  }
+
+  static googleCredentials() {
+    Config.readEnv();
+
+    return Config.env.GOOGLE_CLOUD_CREDENTIALS;
+  }
+
   static readEnv() {
     if (Config.env) {
       return;
     }
-
     Config.env = readEnv({
-      path: join(__dirname, `../../../envs/.env.${process.env.NODE_ENV}`),
+      path: join(__dirname, `../../../../envs/.env.${process.env.NODE_ENV}`),
     }).parsed;
   }
 }

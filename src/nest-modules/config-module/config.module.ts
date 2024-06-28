@@ -40,7 +40,18 @@ export const CONFIG_DB_SCHEMA: Joi.StrictSchemaMap<DB_SCHEMA_TYPE> = {
   DB_AUTO_LOAD_MODELS: Joi.boolean().required(),
 };
 
-export type CONFIG_SCHEMA_TYPE = DB_SCHEMA_TYPE;
+type GOOGLE_CLOUD_SCHEMA_TYPE = {
+  GOOGLE_CLOUD_CREDENTIALS: string;
+  GOOGLE_CLOUD_STORAGE_BUCKET_NAME: string;
+};
+
+export const CONFIG_GOOGLE_CLOUD_SCHEMA: Joi.StrictSchemaMap<GOOGLE_CLOUD_SCHEMA_TYPE> =
+  {
+    GOOGLE_CLOUD_CREDENTIALS: Joi.string().required(),
+    GOOGLE_CLOUD_STORAGE_BUCKET_NAME: Joi.string().required(),
+  };
+
+export type CONFIG_SCHEMA_TYPE = DB_SCHEMA_TYPE & GOOGLE_CLOUD_SCHEMA_TYPE;
 
 @Module({})
 export class ConfigModule extends NestConfigModule {
@@ -57,6 +68,7 @@ export class ConfigModule extends NestConfigModule {
       ],
       validationSchema: Joi.object({
         ...CONFIG_DB_SCHEMA,
+        ...CONFIG_GOOGLE_CLOUD_SCHEMA,
       }),
       ...otherOptions,
     });
