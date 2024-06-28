@@ -15,6 +15,12 @@ import { GENRES_PROVIDERS } from './genres.providers';
   providers: [
     ...Object.values(GENRES_PROVIDERS.REPOSITORIES),
     ...Object.values(GENRES_PROVIDERS.USE_CASES),
+    ...Object.values(GENRES_PROVIDERS.VALIDATIONS),
+  ],
+  // prettier-ignore
+  exports: [
+    GENRES_PROVIDERS.VALIDATIONS.GENRES_IDS_EXISTS_IN_DATABASE_VALIDATOR.provide,
+    GENRES_PROVIDERS.REPOSITORIES.GENRE_REPOSITORY.provide,
   ],
 })
 export class GenresModule {}
