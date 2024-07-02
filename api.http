@@ -1,3 +1,5 @@
+###
+# @name createCategory
 POST http://localhost:3000/categories
 Content-Type: application/json
 
@@ -6,5 +8,104 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/categories/aeb53d2e-4c86-4a8a-bab6-5f9bf87de674
+
+@categoryId = {{createCategory.response.body.data.id}}
+
+###
+GET http://localhost:3000/categories/{{categoryId}}
 Accept: application/json
+
+###
+# @name createCastMember
+POST http://localhost:3000/cast-members
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "type": 1
+}
+
+###
+
+@castMemberId = {{createCastMember.response.body.data.id}}
+
+###
+# @name createGenre
+POST http://localhost:3000/genres
+Content-Type: application/json
+
+{
+  "name": "Genre",
+  "categories_id": [
+    "{{categoryId}}"
+  ]
+}
+
+###
+
+@genreId = {{createGenre.response.body.data.id}}
+
+###
+# @name createVideo
+POST http://localhost:3000/videos
+Content-Type: application/json
+
+{
+  "title": "Title",
+  "description": "Description",
+  "year_launched": 2020,
+  "duration": 90,
+  "rating": "L",
+  "is_opened": false,
+  "categories_id": [
+    "{{categoryId}}"
+  ],
+  "genres_id": [
+    "{{genreId}}"
+  ],
+  "cast_members_id": [
+    "{{castMemberId}}"
+  ]
+}
+
+###
+
+@videoId = {{createVideo.response.body.data.id}}
+
+###
+# @name updateVideo
+PATCH http://localhost:3000/videos/{{videoId}}
+Content-Type: application/json
+
+{
+  "title": "Title Updated",
+  "description": "Description Updated",
+  "year_launched": 2020,
+  "duration": 90,
+  "rating": "L",
+  "is_opened": false,
+  "categories_id": [
+    "{{categoryId}}"
+  ],
+  "genres_id": [
+    "{{genreId}}"
+  ],
+  "cast_members_id": [
+    "{{castMemberId}}"
+  ]
+}
+
+###
+# @name updateVideo
+PATCH http://localhost:3000/videos/{{videoId}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary1234
+
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="video"; filename="video.mp4"
+Content-Type: video/mp4
+
+< ./package.json
+------WebKitFormBoundary1234--
+
+###
+GET http://localhost:3000/videos/{{videoId}}

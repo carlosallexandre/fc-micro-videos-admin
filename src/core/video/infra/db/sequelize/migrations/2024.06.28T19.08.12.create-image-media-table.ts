@@ -20,6 +20,10 @@ export const up: MigrationFn<Sequelize> = async ({ context: sequelize }) => {
       type: DataType.STRING(255),
       allowNull: false,
     },
+    location: {
+      type: DataType.STRING(255),
+      allowNull: false,
+    },
   });
 
   await sequelize.getQueryInterface().addConstraint('image_medias', {

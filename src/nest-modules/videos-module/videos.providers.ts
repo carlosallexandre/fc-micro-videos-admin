@@ -21,6 +21,7 @@ import { ICategoryRepository } from '@core/category/domain/category.repository';
 import { ICastMemberRepository } from '@core/cast-member/domain/cast-member.repository';
 import { IGenreRepository } from '@core/genre/domain/genre.repository';
 import { ProcessAudioVideoMediasUseCase } from '@core/video/application/use-cases/process-audio-video-medias/process-audio-video-medias.use-case';
+import { UploadImageMediasUseCase } from '@core/video/application/use-cases/upload-image-medias/upload-image-medias.use-case';
 
 export const REPOSITORIES = {
   VIDEO_REPOSITORY: {
@@ -106,6 +107,17 @@ export const USE_CASES = {
       storage: IStorage,
     ) {
       return new UploadAudioVideoMediasUseCase(appService, videoRepo, storage);
+    },
+  },
+  UPLOAD_IMAGE_MEDIA_USE_CASE: {
+    provide: UploadImageMediasUseCase,
+    inject: ['UnitOfWork', REPOSITORIES.VIDEO_REPOSITORY.provide, 'Storage'],
+    useFactory(
+      uow: IUnitOfWork,
+      videoRepo: IVideoRepository,
+      storage: IStorage,
+    ) {
+      return new UploadImageMediasUseCase(uow, videoRepo, storage);
     },
   },
   GET_VIDEO_USE_CASE: {
