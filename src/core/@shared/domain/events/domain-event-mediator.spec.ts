@@ -1,3 +1,4 @@
+import EventEmitter2 from 'eventemitter2';
 import { AggregateRoot } from '../aggregate-root';
 import { Uuid } from '../value-objects/uuid.vo';
 import { DomainEventMediator } from './domain-event-mediator';
@@ -37,7 +38,7 @@ describe('DomainEventMediator Unit Tests', () => {
   let mediator: DomainEventMediator;
 
   beforeEach(() => {
-    mediator = new DomainEventMediator();
+    mediator = new DomainEventMediator(new EventEmitter2());
   });
 
   it('should publish handler', async () => {

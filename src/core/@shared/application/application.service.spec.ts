@@ -1,3 +1,4 @@
+import EventEmitter2 from 'eventemitter2';
 import { AggregateRoot } from '../domain/aggregate-root';
 import { DomainEventMediator } from '../domain/events/domain-event-mediator';
 import { IUnitOfWork } from '../domain/repository/unit-of-work.interface';
@@ -22,7 +23,7 @@ describe('ApplicationService Unit Tests', () => {
 
   beforeEach(() => {
     uow = new UnitOfWorkInMemory();
-    domainEventMediator = new DomainEventMediator();
+    domainEventMediator = new DomainEventMediator(new EventEmitter2());
     applicationService = new ApplicationService(uow, domainEventMediator);
   });
 

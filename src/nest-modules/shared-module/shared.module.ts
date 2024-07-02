@@ -16,10 +16,6 @@ import { ConfigService } from '@nestjs/config';
       },
     },
     {
-      provide: DomainEventMediator,
-      useClass: DomainEventMediator,
-    },
-    {
       provide: ApplicationService,
       inject: ['UnitOfWork', DomainEventMediator],
       useFactory(uow: IUnitOfWork, domainEventMediator: DomainEventMediator) {
