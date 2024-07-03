@@ -12,8 +12,9 @@ Content-Type: application/json
 @categoryId = {{createCategory.response.body.data.id}}
 
 ###
-GET http://localhost:3000/categories/{{categoryId}}
+GET http://localhost:3000/categories/
 Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 ###
 # @name createCastMember
@@ -113,9 +114,16 @@ GET http://localhost:3000/videos/{{videoId}}
 ###
 GET http://localhost:3000/rabbitmq
 
+### Configuração do openid connect server (keycloak)
+GET http://host.docker.internal:8080/realms/codeflix/.well-known/openid-configuration
+
+### Certificados do openid connect server (keycloak)
+GET http://host.docker.internal:8080/realms/codeflix/protocol/openid-connect/certs
+
 ###
+# @name auth
 # Estou usando host.docker.internal, porque no momento o dev container com rest client está fazendo requisição de dentro do container, 
-# então por localhost:8080 não funciona, mas se estiver usando o rest client fora do container, pode usar localhost:8080
+# então por isso localhost:8080 não funciona, mas se estiver usando o rest client fora do container, pode usar localhost:8080
 POST http://host.docker.internal:8080/realms/codeflix/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
@@ -123,3 +131,22 @@ username=admin@user.com
 &password=secret
 &grant_type=password
 &client_id=codeflix-admin-frontend
+
+###
+POST http://localhost:3000/auth
+Content-Type: application/json
+
+{
+  "email": "admin@user.com",
+  "password": "123456"
+}
+
+###
+# For genreate new accessToken run: `node create-token.js`
+@accessToken = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiYWRtaW4tY2F0YWxvZyJdfSwiaWF0IjoxNzIwMDE5NDI4LCJleHAiOjE3MjAxMDU4Mjh9.LIZZfxovQR4n73gynOVi1FdhMD20pPLE4iPux9hSYFKCSST6CuejsWUOwaoCYo_bPZQ0O2yiq9OwPPkcPOT9kas0vQk7qvgQCi9k_jpy67ftybmX8W7xBOGTe9-nBESb390cdY3DtC1rr-sdEZF6u-OlpEb9f2DGzSRecQ9GFCENdA5QqVNixYavKG6hKLdAgizCxv8898E-wB63JCnESI1wRRrb2Rrvgk1wfo_VXcv_2Y2Z6QRx_FLVXlflPKoVtPCheIJIxc1kBupDgmZaaAflGhkNfN3yKkf2lQSBD4PhBbicgnTqzsO2B8i1USgpArEGluh4ztUBH-rOcxbcVQ
+
+###
+GET http://localhost:3000/auth
+Accept: application/json
+# Authorization: Bearer {{auth.response.body.access_token}}
+Authorization: Bearer {{accessToken}}
