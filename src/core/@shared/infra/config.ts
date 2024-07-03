@@ -26,6 +26,12 @@ export class Config {
     return Config.env.GOOGLE_CLOUD_CREDENTIALS;
   }
 
+  static rabbitMQ() {
+    Config.readEnv();
+
+    return Config.env.RABBITMQ_URI;
+  }
+
   static readEnv() {
     if (Config.env) {
       return;

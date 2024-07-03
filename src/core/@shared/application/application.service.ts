@@ -15,7 +15,12 @@ export class ApplicationService {
     for (const aggregateRoot of this.uow.getAggregateRoots()) {
       await this.domainEventMediator.publish(aggregateRoot);
     }
+
     await this.uow.commit();
+
+    for (const aggregateRoot of this.uow.getAggregateRoots()) {
+      await this.domainEventMediator.publishIntegrationEvents(aggregateRoot);
+    }
   }
 
   async fail() {

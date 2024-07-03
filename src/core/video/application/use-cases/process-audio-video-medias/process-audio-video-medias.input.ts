@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID, IsIn } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID, IsIn, MaxLength } from 'class-validator';
 import { AudioVideoMediaStatus } from '@core/video/domain/audio-video-media.vo';
 
 export type ProcessAudioVideoMediasInputConstructorProps = {
@@ -14,6 +14,8 @@ export class ProcessAudioVideoMediasInput {
   @IsNotEmpty()
   video_id: string;
 
+  @MaxLength(255)
+  @IsString()
   @IsNotEmpty()
   encoded_location: string;
 

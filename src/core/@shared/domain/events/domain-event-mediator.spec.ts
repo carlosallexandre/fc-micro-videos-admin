@@ -2,7 +2,7 @@ import EventEmitter2 from 'eventemitter2';
 import { AggregateRoot } from '../aggregate-root';
 import { Uuid } from '../value-objects/uuid.vo';
 import { DomainEventMediator } from './domain-event-mediator';
-import { IDomainEvent } from './domain-event.interface';
+import { IDomainEvent, IIntegrationEvent } from './domain-event.interface';
 
 class StubEvent implements IDomainEvent {
   occurred_on: Date;
@@ -17,6 +17,26 @@ class StubEvent implements IDomainEvent {
   }
 }
 
+class StubEventWithIntegrationEvent extends StubEvent {
+  getIntegrationEvent(): StubIntegrationEvent {
+    return new StubIntegrationEvent(this);
+  }
+}
+
+class StubIntegrationEvent implements IIntegrationEvent {
+  event_version: number;
+  event_name: string;
+  occurred_on: Date;
+  payload: any;
+
+  constructor(event: StubEvent) {
+    this.occurred_on = event.occurred_on;
+    this.event_version = event.event_version;
+    this.payload = event;
+    this.event_name = this.constructor.name;
+  }
+}
+
 class StubAggregate extends AggregateRoot {
   id: Uuid;
   name: string;
@@ -24,6 +44,11 @@ class StubAggregate extends AggregateRoot {
   action(name: string) {
     this.name = name;
     this.applyEvent(new StubEvent(this.id, this.name));
+  }
+
+  actionWithIntegrationEvent(name: string) {
+    this.name = name;
+    this.applyEvent(new StubEventWithIntegrationEvent(this.id, this.name));
   }
 
   toJSON() {
@@ -52,5 +77,31 @@ describe('DomainEventMediator Unit Tests', () => {
     aggregate.action('test');
     await mediator.publish(aggregate);
     await mediator.publish(aggregate);
+  });
+
+  it('should not publish an integration event when', () => {
+    const spyEmitAsync = jest.spyOn(mediator['eventEmitter'], 'emitAsync');
+
+    const aggregate = new StubAggregate();
+    aggregate.action('test');
+
+    expect(spyEmitAsync).not.toHaveBeenCalled();
+  });
+
+  it('should publish integration event', async () => {
+    expect.assertions(4);
+    mediator.register(
+      StubIntegrationEvent.name,
+      async (event: StubIntegrationEvent) => {
+        expect(event.event_name).toBe(StubIntegrationEvent.name);
+        expect(event.event_version).toBe(1);
+        expect(event.occurred_on).toBeInstanceOf(Date);
+        expect(event.payload.name).toBe('test');
+      },
+    );
+
+    const aggregate = new StubAggregate();
+    aggregate.actionWithIntegrationEvent('test');
+    await mediator.publishIntegrationEvents(aggregate);
   });
 });

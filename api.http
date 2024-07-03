@@ -109,3 +109,6 @@ Content-Type: video/mp4
 
 ###
 GET http://localhost:3000/videos/{{videoId}}
+
+###
+GET http://localhost:3000/rabbitmq

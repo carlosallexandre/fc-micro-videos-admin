@@ -24,6 +24,7 @@ import { ProcessAudioVideoMediasUseCase } from '@core/video/application/use-case
 import { UploadImageMediasUseCase } from '@core/video/application/use-cases/upload-image-medias/upload-image-medias.use-case';
 import { PublishVideoMediaReplacedInQueueHandler } from '@core/video/application/handlers/publish-video-media-replaced-in-queue.handler';
 import { DomainEventMediator } from '@core/@shared/domain/events/domain-event-mediator';
+import { IMessageBroker } from '@core/@shared/application/message-broker.interface';
 
 export const REPOSITORIES = {
   VIDEO_REPOSITORY: {
@@ -156,9 +157,15 @@ export const USE_CASES = {
 export const HANDLERS = {
   PUBLISH_VIDEO_MEDIA_REPLACED_IN_QUEUE_HANDLER: {
     provide: PublishVideoMediaReplacedInQueueHandler,
-    inject: [DomainEventMediator],
-    useFactory(domainEventMediator: DomainEventMediator) {
-      return new PublishVideoMediaReplacedInQueueHandler(domainEventMediator);
+    inject: [DomainEventMediator, 'MessageBroker'],
+    useFactory(
+      domainEventMediator: DomainEventMediator,
+      messageBroker: IMessageBroker,
+    ) {
+      return new PublishVideoMediaReplacedInQueueHandler(
+        domainEventMediator,
+        messageBroker,
+      );
     },
   },
 };

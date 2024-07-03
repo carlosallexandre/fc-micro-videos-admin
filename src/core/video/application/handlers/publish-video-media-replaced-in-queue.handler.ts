@@ -1,19 +1,22 @@
-import { IDomainEventHandler } from '@core/@shared/application/domain-event-handler.interface';
+import { IIntegrationEventHandler } from '@core/@shared/application/domain-event-handler.interface';
+import { IMessageBroker } from '@core/@shared/application/message-broker.interface';
 import { DomainEventMediator } from '@core/@shared/domain/events/domain-event-mediator';
-import { IDomainEvent } from '@core/@shared/domain/events/domain-event.interface';
-import { VideoAudioMediaReplaced } from '@core/video/domain/events/video-audio-media-replaced.event';
+import { VideoAudioMediaReplacedIntegrationEvent } from '@core/video/domain/events/video-audio-media-replaced.event';
 
 export class PublishVideoMediaReplacedInQueueHandler
-  implements IDomainEventHandler
+  implements IIntegrationEventHandler
 {
-  constructor(private readonly eventMediator: DomainEventMediator) {
+  constructor(
+    private readonly eventMediator: DomainEventMediator,
+    private readonly messageBroker: IMessageBroker,
+  ) {
     this.eventMediator.register(
-      VideoAudioMediaReplaced.name,
+      VideoAudioMediaReplacedIntegrationEvent.name,
       this.handle.bind(this),
     );
   }
 
-  async handle(event: IDomainEvent): Promise<void> {
-    console.log(event);
+  async handle(event: VideoAudioMediaReplacedIntegrationEvent): Promise<void> {
+    await this.messageBroker.publishEvent(event);
   }
 }
