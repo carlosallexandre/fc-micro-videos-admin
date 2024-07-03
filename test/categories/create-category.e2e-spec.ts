@@ -19,6 +19,23 @@ describe('Categories Controller (e2e)', () => {
   });
 
   describe('/categories (POST)', () => {
+    describe('unauthenticated', () => {
+      it('should return 401 when not authenticated', () => {
+        return request(appHelper.app.getHttpServer())
+          .post('/categories')
+          .send({})
+          .expect(401);
+      });
+
+      it('should return 403 when not authenticated as admin', () => {
+        return request(appHelper.app.getHttpServer())
+          .post('/categories')
+          .authenticate(appHelper.app, false)
+          .send({})
+          .expect(403);
+      });
+    });
+
     describe('should returns a response error with 422 status code when request body is invalid', () => {
       const arrange = Object.entries(
         CreateCategoryFixture.arrangeInvalidRequest(),
@@ -27,6 +44,7 @@ describe('Categories Controller (e2e)', () => {
       it.each(arrange)('when body is $label', ({ value }) => {
         return request(appHelper.app.getHttpServer())
           .post('/categories')
+          .authenticate(appHelper.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
@@ -41,6 +59,7 @@ describe('Categories Controller (e2e)', () => {
       it.each(arrange)('when body is $label', ({ value }) => {
         return request(appHelper.app.getHttpServer())
           .post('/categories')
+          .authenticate(appHelper.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
@@ -55,6 +74,7 @@ describe('Categories Controller (e2e)', () => {
         async ({ send_data, expected }) => {
           const res = await request(appHelper.app.getHttpServer())
             .post('/categories')
+            .authenticate(appHelper.app)
             .send(send_data)
             .expect(201);
 

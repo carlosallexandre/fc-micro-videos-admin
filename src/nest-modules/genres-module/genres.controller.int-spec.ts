@@ -26,6 +26,7 @@ import { GenresModule } from './genres.module';
 import { GenreCollectionPresenter } from './genres.presenter';
 import { GENRES_PROVIDERS } from './genres.providers';
 import { ConfigModule } from '../config-module/config.module';
+import { AuthModule } from '../auth-module/auth.module';
 
 describe('GenresController Integration Tests', () => {
   let controller: GenresController;
@@ -34,7 +35,12 @@ describe('GenresController Integration Tests', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot(), DatabaseModule, GenresModule],
+      imports: [
+        ConfigModule.forRoot(),
+        AuthModule,
+        DatabaseModule,
+        GenresModule,
+      ],
     })
       .overrideProvider('UnitOfWork')
       .useFactory({

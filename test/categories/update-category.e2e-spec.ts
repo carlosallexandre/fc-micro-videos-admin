@@ -13,6 +13,25 @@ describe('CategoriesController (e2e)', () => {
   const uuid = '9366b7dc-2d71-4799-b91c-c64adb205104';
 
   describe('/categories/:id (PATCH)', () => {
+    describe('unauthenticated', () => {
+      const appHelper = startApp();
+
+      it('should return 401 when not authenticated', () => {
+        return request(appHelper.app.getHttpServer())
+          .patch('/categories/' + uuid)
+          .send({})
+          .expect(401);
+      });
+
+      it('should return 403 when not authenticated as admin', () => {
+        return request(appHelper.app.getHttpServer())
+          .patch('/categories/' + uuid)
+          .authenticate(appHelper.app, false)
+          .send({})
+          .expect(403);
+      });
+    });
+
     describe('should a response error when id is invalid or not found', () => {
       const nestApp = startApp();
       const faker = Category.fake().aCategory();
@@ -43,6 +62,7 @@ describe('CategoriesController (e2e)', () => {
         async ({ id, send_data, expected }) => {
           return request(nestApp.app.getHttpServer())
             .patch(`/categories/${id}`)
+            .authenticate(nestApp.app)
             .send(send_data)
             .expect(expected.statusCode)
             .expect(expected);
@@ -60,6 +80,7 @@ describe('CategoriesController (e2e)', () => {
       test.each(arrange)('when body is $label', ({ value }) => {
         return request(app.app.getHttpServer())
           .patch(`/categories/${uuid}`)
+          .authenticate(app.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
@@ -81,11 +102,13 @@ describe('CategoriesController (e2e)', () => {
           CategoryProviders.REPOSITORIES.CATEGORY_REPOSITORY.provide,
         );
       });
+
       test.each(arrange)('when body is $label', async ({ value }) => {
         const category = Category.fake().aCategory().build();
         await categoryRepo.insert(category);
         return request(app.app.getHttpServer())
           .patch(`/categories/${category.id.toString()}`)
+          .authenticate(app.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
@@ -102,6 +125,7 @@ describe('CategoriesController (e2e)', () => {
           CategoryProviders.REPOSITORIES.CATEGORY_REPOSITORY.provide,
         );
       });
+
       test.each(arrange)(
         'when body is $send_data',
         async ({ send_data, expected }) => {
@@ -110,8 +134,10 @@ describe('CategoriesController (e2e)', () => {
 
           const res = await request(appHelper.app.getHttpServer())
             .patch(`/categories/${categoryCreated.id.toString()}`)
+            .authenticate(appHelper.app)
             .send(send_data)
             .expect(200);
+
           const keyInResponse = UpdateCategoryFixture.keysInResponse;
           expect(Object.keys(res.body)).toStrictEqual(['data']);
           expect(Object.keys(res.body.data)).toStrictEqual(keyInResponse);

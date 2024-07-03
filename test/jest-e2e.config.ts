@@ -10,7 +10,7 @@ const config: Config = {
   transform: {
     '^.+\\.(t|j)s$': '@swc/jest',
   },
-  setupFilesAfterEnv: ['./jest-setup.ts'],
+  setupFilesAfterEnv: ['./jest-setup.ts', './supertest-extend.ts'],
 };
 
 export default config;

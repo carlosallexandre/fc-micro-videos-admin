@@ -9,6 +9,7 @@ import { VideosModule } from '../videos.module';
 import { UnitOfWorkInMemory } from '@core/@shared/infra/db/in-memory/in-memory-unit-of-work';
 import { VideoAudioMediaReplacedIntegrationEvent } from '@core/video/domain/events/video-audio-media-replaced.event';
 import { ConfigModule } from 'src/nest-modules/config-module/config.module';
+import { AuthModule } from 'src/nest-modules/auth-module/auth.module';
 
 class RabbitmqModuleFake {
   static forRoot(): DynamicModule {
@@ -35,6 +36,7 @@ describe('VideosModule Unit Tests', () => {
     module = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot(),
+        AuthModule,
         SharedModule,
         EventModule,
         DatabaseModule,

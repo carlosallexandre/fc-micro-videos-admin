@@ -26,6 +26,7 @@ import { VIDEOS_PROVIDERS } from '../videos.providers';
 import { EVENTS_CONFIG_MESSAGE_BROKER } from '@core/@shared/infra/message-broker/rabbitmq/events-config.message-broker';
 import { VideoAudioMediaReplacedIntegrationEvent } from '@core/video/domain/events/video-audio-media-replaced.event';
 import { ConfigModule } from 'src/nest-modules/config-module/config.module';
+import { AuthModule } from 'src/nest-modules/auth-module/auth.module';
 
 describe('PublishVideoMediaReplacedInQueueHandler Integration Tests', () => {
   let module: TestingModule;
@@ -34,6 +35,7 @@ describe('PublishVideoMediaReplacedInQueueHandler Integration Tests', () => {
     module = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot(),
+        AuthModule,
         SharedModule,
         DatabaseModule,
         EventModule,

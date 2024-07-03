@@ -8,9 +8,25 @@ describe('CategoriesControllet (e2e)', () => {
   describe('/categories/:id (GET)', () => {
     const appHelper = startApp();
 
+    it('should return 401 when not authenticated', () => {
+      return request(appHelper.app.getHttpServer())
+        .get('/categories/some-id')
+        .send({})
+        .expect(401);
+    });
+
+    it('should return 403 when not authenticated as admin', () => {
+      return request(appHelper.app.getHttpServer())
+        .get('/categories/some-id')
+        .authenticate(appHelper.app, false)
+        .send({})
+        .expect(403);
+    });
+
     it('should return a response error with 422 status code when id is invalid', () => {
       return request(appHelper.app.getHttpServer())
         .get('/categories/fake-id')
+        .authenticate(appHelper.app)
         .expect(422)
         .expect({
           statusCode: 422,
@@ -22,6 +38,7 @@ describe('CategoriesControllet (e2e)', () => {
     it('should return a response error with 404 status code when category not found', () => {
       return request(appHelper.app.getHttpServer())
         .get('/categories/7c60e95e-1130-4b3f-9e00-40bcfc46f280')
+        .authenticate(appHelper.app)
         .expect(404)
         .expect({
           statusCode: 404,
@@ -40,6 +57,7 @@ describe('CategoriesControllet (e2e)', () => {
 
       await request(appHelper.app.getHttpServer())
         .get(`/categories/${category.id.toString()}`)
+        .authenticate(appHelper.app)
         .expect(200)
         .expect({
           data: {
