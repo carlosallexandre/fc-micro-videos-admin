@@ -8,6 +8,8 @@ services:
       - 3000:3000
     volumes:
       - .:/home/node/app
+    extra-hosts:
+      - 'host.docker.internal:host-gateway'
 
   db:
     image: mysql:8.0.30-debian
