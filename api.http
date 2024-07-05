@@ -2,6 +2,7 @@
 # @name createCategory
 POST http://localhost:3000/categories
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
   "name": "Movie"
