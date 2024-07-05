@@ -1,0 +1,51 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      target: development
+      cache_from:
+        - type=gha
+    restart: on-failure
+    ports:
+      - 3000:3000
+    volumes:
+      - ./envs/:/home/node/app/envs/
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - GOOGLE_CLOUD_STORAGE_BUCKET_NAME
+      - GOOGLE_CLOUD_CREDENTIALS
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  db:
+    image: mysql:8.0.30-debian
+    environment:
+      - MYSQL_DATABASE=micro_videos
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql:delegated
+    security_opt:
+      - seccomp:unconfined
+    healthcheck:
+      test: mysqladmin ping -h localhost -u root --password=$$MYSQL_ROOT_PASSWORD
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  rabbitmq:
+    build: ./.docker/rabbitmq
+    ports:
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
