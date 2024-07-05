@@ -1,4 +1,4 @@
-FROM node:20.5.1-slim as development
+FROM node:20.5.1-slim AS development
 
 USER node
 
@@ -15,7 +15,7 @@ CMD [ "tail", "-f", "/dev/null" ]
 
 ###
 
-FROM node:20.5.1-slim as builder
+FROM node:20.5.1-slim AS builder
 
 USER node
 
@@ -33,7 +33,7 @@ RUN npm ci --only=production
 
 ###
 
-FROM node:20.5.1-slim as production
+FROM node:20.5.1-slim AS production
 
 ENV NODE_ENV production
 
